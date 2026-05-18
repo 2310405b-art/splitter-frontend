@@ -1,4 +1,4 @@
-﻿import { apiClient } from '@/features/auth/api';
+import { apiClient } from '@/features/auth/api';
 
 export type ReceiptImagePayload = {
   mimeType: string;
@@ -9,6 +9,12 @@ export interface ParseReceiptRequest {
   sessionName: string;
   language: string;
   image: ReceiptImagePayload;
+}
+
+export interface ParseQRRequest {
+  sessionName: string;
+  language: string;
+  qrText: string;
 }
 
 export type ParsedReceiptItemKind = 'item' | 'fee' | 'discount' | string;
@@ -113,6 +119,17 @@ export const ReceiptApi = {
       return data;
     } catch (error) {
       console.error('[API] Error (parse):', error);
+      throw normalizeError(error);
+    }
+  },
+
+  async parseQR(payload: ParseQRRequest): Promise<ParseReceiptResponse> {
+    try {
+      const { data } = await apiClient.post<ParseReceiptResponse>('/sessions/scan-qr', payload);
+      console.log('[API] QR Response:', JSON.stringify(data, null, 2));
+      return data;
+    } catch (error) {
+      console.error('[API] Error (parseQR):', error);
       throw normalizeError(error);
     }
   },

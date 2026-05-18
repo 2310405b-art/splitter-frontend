@@ -4,6 +4,10 @@ import * as Localization from 'expo-localization';
 import en from './locales/en.json';
 import ja from './locales/ja.json';
 import uz from './locales/uz.json';
+import ru from './locales/ru.json';
+import tr from './locales/tr.json';
+import zh from './locales/zh.json';
+import ko from './locales/ko.json';
 import { LANGUAGE_CODES, DEFAULT_LANGUAGE, type LanguageCode } from './languages';
 
 const detectedLocale = Localization.getLocales()[0]?.languageCode;
@@ -19,6 +23,10 @@ void i18n.use(initReactI18next).init({
     en: { translation: en },
     ja: { translation: ja },
     uz: { translation: uz },
+    ru: { translation: ru },
+    tr: { translation: tr },
+    zh: { translation: zh },
+    ko: { translation: ko },
   },
   lng: initialLanguage,
   fallbackLng: DEFAULT_LANGUAGE,

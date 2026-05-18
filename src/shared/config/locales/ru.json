@@ -1,0 +1,250 @@
+{
+  "app": {
+    "name": "Разделение чека",
+    "subtitle": "Легко делите счета с друзьями"
+  },
+  "features": {
+    "scan": "Сканировать",
+    "scanDesc": "Сфотографируйте ваш чек",
+    "split": "Разделить счёт",
+    "splitDesc": "Разделите расходы с друзьями",
+    "calculate": "Рассчитать",
+    "calculateDesc": "Узнайте, кто сколько должен"
+  },
+  "welcome": {
+    "message": "Добро пожаловать! Начнём",
+    "newUser": "Впервые в Receipt Splitter?",
+    "newUserDesc": "Создайте аккаунт, чтобы начать делить счета",
+    "existingUser": "Уже есть аккаунт?"
+  },
+  "auth": {
+    "signIn": "Войти",
+    "signInDesc": "С возвращением! Войдите, чтобы продолжить",
+    "createAccount": "Создать аккаунт",
+    "createAccountDesc": "Присоединяйтесь и начните делить счета с друзьями",
+    "email": "Email",
+    "emailPlaceholder": "Введите ваш email",
+    "password": "Пароль",
+    "passwordPlaceholder": "Введите пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "username": "Имя пользователя",
+    "usernamePlaceholder": "Введите имя пользователя",
+    "forgotPassword": "Забыли пароль?",
+    "noAccount": "Нет аккаунта?",
+    "haveAccount": "Уже есть аккаунт?",
+    "loginError": "Произошла ошибка при входе",
+    "registerError": "Произошла ошибка при регистрации"
+  },
+  "common": {
+    "welcome": "Добро пожаловать",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "continue": "Продолжить",
+    "back": "Назад"
+  },
+  "friends": {
+    "title": "Друзья",
+    "requests": "Запросы",
+    "add": "Добавить друга",
+    "empty": "Пока нет друзей. Нажмите +, чтобы добавить.",
+    "searchPlaceholder": "Введите ID, например USER#1234",
+    "send": "Отправить запрос",
+    "remove": "Удалить",
+    "loading": "Загрузка...",
+    "error": "Не удалось загрузить"
+  },
+  "home": {
+    "header": {
+      "greeting": "Привет, {{name}}!",
+      "friendFallback": "друг"
+    },
+    "scan": {
+      "cta": "Сканировать приглашение"
+    },
+    "actions": {
+      "friends": "Друзья",
+      "groups": "Группы"
+    },
+    "recent": {
+      "title": "Последние счета",
+      "showMore": "Показать ещё",
+      "loading": "Загрузка счетов...",
+      "empty": "Счетов пока нет",
+      "summary": "{{date}} • {{participants}}",
+      "fallbackName": "Счёт",
+      "participants": "{{count}} участников",
+      "participants_one": "{{count}} участник",
+      "participants_other": "{{count}} участников",
+      "amount": "{{currency}} {{amount}}"
+    },
+    "features": {
+      "title": "Что вы можете делать"
+    }
+  },
+  "profile": {
+    "title": "Профиль",
+    "status": { "saved": "Сохранено" },
+    "actions": { "copy": "Копировать" },
+    "labels": { "guest": "Гость", "notAvailable": "Н/Д" },
+    "avatar": {
+      "title": "Аватар",
+      "hint": "Загруженные аватары доставляются через CDN и обновляются мгновенно.",
+      "upload": "Загрузить с телефона",
+      "uploading": "Загрузка...",
+      "reset": "Сбросить аватар",
+      "resetting": "Сброс..."
+    },
+    "info": {
+      "title": "Информация о пользователе",
+      "usernameLabel": "Имя пользователя",
+      "usernamePlaceholder": "Введите новое имя",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Введите новый email",
+      "userId": "ID пользователя"
+    },
+    "password": {
+      "title": "Изменить пароль",
+      "currentLabel": "Текущий пароль",
+      "currentPlaceholder": "Введите текущий пароль",
+      "newLabel": "Новый пароль",
+      "newPlaceholder": "Введите новый пароль",
+      "confirmLabel": "Подтвердите новый пароль",
+      "confirmPlaceholder": "Введите новый пароль ещё раз",
+      "requirements": "Пароль должен содержать не менее 8 символов, включая заглавные и строчные буквы, цифры и спецсимволы.",
+      "submit": "Изменить пароль",
+      "updating": "Обновление..."
+    },
+    "logout": "Выйти",
+    "copy": {
+      "successTitle": "Скопировано",
+      "successMessage": "{{field}} скопировано в буфер обмена.",
+      "unavailableMessage": "{{field}} пока недоступно."
+    },
+    "alerts": {
+      "permissionTitle": "Требуется разрешение",
+      "permissionMessage": "Разрешите доступ к фотогалерее для выбора аватара.",
+      "unavailableTitle": "Недоступно",
+      "avatarLoginRequired": "Войдите, чтобы обновить аватар.",
+      "profileLoginRequired": "Войдите, чтобы обновить профиль.",
+      "passwordLoginRequired": "Войдите, чтобы изменить пароль.",
+      "avatarUpdateFailed": "Не удалось обновить аватар.",
+      "avatarResetFailed": "Не удалось сбросить аватар.",
+      "usernameUpdateFailed": "Не удалось обновить имя пользователя.",
+      "emailUpdateFailed": "Не удалось обновить email.",
+      "passwordChangeFailed": "Не удалось изменить пароль.",
+      "logoutFailed": "Не удалось выйти. Попробуйте ещё раз.",
+      "imageMissing": "URI файла изображения не найден.",
+      "uploadReadFailed": "Не удалось прочитать выбранный файл."
+    },
+    "validation": {
+      "usernameRequired": "Введите имя пользователя.",
+      "usernameMin": "Имя пользователя должно содержать минимум 2 символа.",
+      "emailRequired": "Введите email.",
+      "emailInvalid": "Введите корректный email.",
+      "passwordCurrent": "Введите текущий пароль.",
+      "passwordLength": "Новый пароль должен содержать минимум 8 символов.",
+      "passwordComplexity": "Пароль должен содержать заглавные, строчные буквы, цифры и спецсимволы.",
+      "passwordMismatch": "Пароли не совпадают.",
+      "passwordDifferent": "Выберите другой пароль."
+    }
+  },
+  "navigation": {
+    "mainMenu": "Главное меню",
+    "tabs": { "home": "Главная", "settings": "Настройки", "profile": "Профиль" },
+    "groups": { "title": "Группы", "create": "Новая группа", "details": "Группа" },
+    "scanInvite": "Сканировать приглашение",
+    "friendQr": "QR друга",
+    "groupQr": "QR группы",
+    "scanReceipt": "Сканировать чек",
+    "participants": "Участники",
+    "itemsSplit": "Разделение",
+    "finish": "Завершение",
+    "history": "Последние счета",
+    "historyDetails": "Детали счёта"
+  },
+  "settings": {
+    "title": "Настройки аккаунта",
+    "subtitle": "Обновите имя пользователя и пароль ниже.",
+    "username": "Имя пользователя",
+    "saveUsername": "Сохранить",
+    "reset": "Сбросить",
+    "password": "Пароль",
+    "currentPassword": "Текущий пароль",
+    "newPassword": "Новый пароль",
+    "confirmNewPassword": "Подтвердите новый пароль",
+    "passwordHint": "Пароль: минимум 8 символов, заглавные, строчные, цифры, спецсимволы.",
+    "changePassword": "Изменить пароль",
+    "saving": "Сохранение...",
+    "updating": "Обновление...",
+    "language": {
+      "title": "Язык",
+      "description": "Выберите язык приложения.",
+      "options": {
+        "en": "English",
+        "ja": "日本語",
+        "uz": "O'zbekcha",
+        "ru": "Русский",
+        "tr": "Türkçe",
+        "zh": "中文",
+        "ko": "한국어"
+      }
+    }
+  },
+  "verify": {
+    "title": "Проверка",
+    "total": "Итого:",
+    "continueToSplit": "Перейти к разделению",
+    "addItem": "Добавить товар",
+    "editItem": "Редактировать",
+    "itemName": "Название",
+    "itemNamePlaceholder": "Например: Пицца",
+    "price": "Цена",
+    "quantity": "Количество",
+    "save": "Сохранить"
+  },
+  "split": {
+    "title": "Разделение",
+    "addPerson": "Добавить человека",
+    "addBtn": "Добавить",
+    "typeName": "Введите имя",
+    "namePlaceholder": "Например: Алексей",
+    "yourFriends": "Ваши друзья",
+    "total": "Итого:",
+    "done": "Готово!",
+    "eachPays": "Каждый: {{amount}}",
+    "unassignedWarning": "{{count}} товар(ов) не распределено",
+    "unassignedAlert": "{{count}} товар(ов) не распределено. Продолжить?",
+    "attention": "Внимание!",
+    "yes": "Да",
+    "no": "Нет",
+    "deleteTitle": "Удалить",
+    "deleteConfirm": "Удалить этого человека?"
+  },
+  "finish": {
+    "billSummary": "Итог счёта",
+    "receiptNum": "Чек #{{id}}",
+    "totalAmount": "Общая сумма",
+    "byParticipant": "По участникам:",
+    "byItem": "По товарам:",
+    "noParticipantData": "Данные участников пока отсутствуют.",
+    "noAllocationData": "Данные о распределении отсутствуют.",
+    "complete": "Завершить расчёт"
+  },
+  "scan": {
+    "title": "Сканировать чек",
+    "back": "Назад",
+    "sessionName": "Название",
+    "sessionPlaceholder": "Например: Ресторан",
+    "language": "язык:",
+    "processing": "Обработка...",
+    "uploading": "Загрузка чека...",
+    "scanBtn": "Сканировать",
+    "cancel": "Отмена",
+    "useMock": "Тестовый чек",
+    "allowCamera": "Разрешите доступ к камере",
+    "lastPhoto": "Последнее фото сохранено; повторный снимок перезапишет его."
+  }
+}

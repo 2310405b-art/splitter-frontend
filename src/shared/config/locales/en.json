@@ -181,14 +181,85 @@
     "historyDetails": "Bill details"
   },
   "settings": {
+    "title": "Account settings",
+    "subtitle": "Update your username and password using the forms below.",
+    "username": "Username",
+    "saveUsername": "Save username",
+    "reset": "Reset",
+    "password": "Password",
+    "currentPassword": "Current password",
+    "newPassword": "New password",
+    "confirmNewPassword": "Confirm new password",
+    "passwordHint": "Password must be at least 8 characters and include uppercase, lowercase, number, and special symbol.",
+    "changePassword": "Change password",
+    "saving": "Saving...",
+    "updating": "Updating...",
     "language": {
       "title": "Language",
       "description": "Choose the language used across the app.",
       "options": {
         "en": "English",
         "ja": "Japanese",
-        "uz": "Uzbek"
+        "uz": "Uzbek",
+        "ru": "Russian",
+        "tr": "Turkish",
+        "zh": "Chinese",
+        "ko": "Korean"
       }
     }
+  },
+  "verify": {
+    "title": "Verify Items",
+    "total": "Total:",
+    "continueToSplit": "Continue to Split",
+    "addItem": "Add Item",
+    "editItem": "Edit Item",
+    "itemName": "Item Name",
+    "itemNamePlaceholder": "e.g. Pizza",
+    "price": "Price",
+    "quantity": "Quantity",
+    "save": "Save"
+  },
+  "split": {
+    "title": "Split",
+    "addPerson": "Add person",
+    "addBtn": "Add",
+    "typeName": "Type a name",
+    "namePlaceholder": "e.g. John",
+    "yourFriends": "Your friends",
+    "total": "Total:",
+    "done": "Done!",
+    "eachPays": "Each: {{amount}}",
+    "unassignedWarning": "{{count}} item(s) not assigned yet",
+    "unassignedAlert": "{{count}} item(s) not assigned yet. Continue?",
+    "attention": "Attention!",
+    "yes": "Yes",
+    "no": "No",
+    "deleteTitle": "Delete",
+    "deleteConfirm": "Remove this person?"
+  },
+  "finish": {
+    "billSummary": "Bill Summary",
+    "receiptNum": "Receipt #{{id}}",
+    "totalAmount": "Total Amount",
+    "byParticipant": "Split by participant:",
+    "byItem": "Split by item:",
+    "noParticipantData": "No participant data available yet.",
+    "noAllocationData": "No allocation details available.",
+    "complete": "Complete settlement"
+  },
+  "scan": {
+    "title": "Scan receipt",
+    "back": "Back",
+    "sessionName": "Session name",
+    "sessionPlaceholder": "e.g. Cafe on October",
+    "language": "language:",
+    "processing": "Processing...",
+    "uploading": "Uploading receipt...",
+    "scanBtn": "Scan receipt",
+    "cancel": "Cancel",
+    "useMock": "Use mock receipt",
+    "allowCamera": "Allow camera access",
+    "lastPhoto": "Last photo stored; capturing again will overwrite it."
   }
 }

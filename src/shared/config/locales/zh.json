@@ -1,0 +1,34 @@
+{
+  "app": { "name": "账单拆分", "subtitle": "轻松与朋友分摊账单" },
+  "features": { "scan": "扫描", "scanDesc": "拍摄您的收据", "split": "拆分账单", "splitDesc": "与朋友分摊费用", "calculate": "计算", "calculateDesc": "了解谁欠多少" },
+  "welcome": { "message": "欢迎！让我们开始吧", "newUser": "第一次使用？", "newUserDesc": "创建账户开始拆分账单", "existingUser": "已有账户？" },
+  "auth": { "signIn": "登录", "signInDesc": "欢迎回来！请登录以继续", "createAccount": "创建账户", "createAccountDesc": "加入我们，开始与朋友拆分账单", "email": "邮箱", "emailPlaceholder": "输入您的邮箱", "password": "密码", "passwordPlaceholder": "输入密码", "confirmPassword": "确认密码", "username": "用户名", "usernamePlaceholder": "输入用户名", "forgotPassword": "忘记密码？", "noAccount": "没有账户？", "haveAccount": "已有账户？", "loginError": "登录时出错", "registerError": "注册时出错" },
+  "common": { "welcome": "欢迎", "loading": "加载中...", "error": "错误", "success": "成功", "cancel": "取消", "confirm": "确认", "continue": "继续", "back": "返回" },
+  "friends": { "title": "好友", "requests": "请求", "add": "添加好友", "empty": "还没有好友。点击 + 添加。", "searchPlaceholder": "输入ID，例如 USER#1234", "send": "发送请求", "remove": "移除", "loading": "加载中...", "error": "加载失败" },
+  "home": {
+    "header": { "greeting": "你好，{{name}}！", "friendFallback": "朋友" },
+    "scan": { "cta": "扫描邀请" },
+    "actions": { "friends": "好友", "groups": "群组" },
+    "recent": { "title": "最近账单", "showMore": "查看更多", "loading": "加载账单...", "empty": "还没有账单", "summary": "{{date}} • {{participants}}", "fallbackName": "账单", "participants": "{{count}}位参与者", "participants_one": "{{count}}位参与者", "participants_other": "{{count}}位参与者", "amount": "{{currency}} {{amount}}" },
+    "features": { "title": "您可以做什么" }
+  },
+  "profile": {
+    "title": "个人资料", "status": { "saved": "已保存" }, "actions": { "copy": "复制" }, "labels": { "guest": "访客", "notAvailable": "无" },
+    "avatar": { "title": "头像", "hint": "上传的头像通过CDN即时更新。", "upload": "从手机上传", "uploading": "上传中...", "reset": "重置头像", "resetting": "重置中..." },
+    "info": { "title": "用户信息", "usernameLabel": "用户名", "usernamePlaceholder": "输入新用户名", "emailLabel": "邮箱", "emailPlaceholder": "输入新邮箱", "userId": "用户ID" },
+    "password": { "title": "修改密码", "currentLabel": "当前密码", "currentPlaceholder": "输入当前密码", "newLabel": "新密码", "newPlaceholder": "输入新密码", "confirmLabel": "确认新密码", "confirmPlaceholder": "再次输入新密码", "requirements": "密码至少8位，需包含大小写字母、数字和特殊符号。", "submit": "修改密码", "updating": "更新中..." },
+    "logout": "退出登录",
+    "copy": { "successTitle": "已复制", "successMessage": "{{field}}已复制到剪贴板。", "unavailableMessage": "{{field}}尚不可用。" },
+    "alerts": { "permissionTitle": "需要权限", "permissionMessage": "请允许访问相册以选择头像。", "unavailableTitle": "不可用", "avatarLoginRequired": "请登录以更新头像。", "profileLoginRequired": "请登录以更新个人资料。", "passwordLoginRequired": "请登录以修改密码。", "avatarUpdateFailed": "无法更新头像。", "avatarResetFailed": "无法重置头像。", "usernameUpdateFailed": "无法更新用户名。", "emailUpdateFailed": "无法更新邮箱。", "passwordChangeFailed": "无法修改密码。", "logoutFailed": "无法退出，请重试。", "imageMissing": "找不到图片URI。", "uploadReadFailed": "无法读取所选文件。" },
+    "validation": { "usernameRequired": "请输入用户名。", "usernameMin": "用户名至少2个字符。", "emailRequired": "请输入邮箱。", "emailInvalid": "请输入有效邮箱。", "passwordCurrent": "请输入当前密码。", "passwordLength": "新密码至少8位。", "passwordComplexity": "密码需包含大小写字母、数字和特殊符号。", "passwordMismatch": "密码不匹配。", "passwordDifferent": "请选择不同密码。" }
+  },
+  "navigation": { "mainMenu": "主菜单", "tabs": { "home": "首页", "settings": "设置", "profile": "个人资料" }, "groups": { "title": "群组", "create": "新建群组", "details": "群组" }, "scanInvite": "扫描邀请", "friendQr": "好友二维码", "groupQr": "群组二维码", "scanReceipt": "扫描收据", "participants": "参与者", "itemsSplit": "拆分", "finish": "完成", "history": "最近账单", "historyDetails": "账单详情" },
+  "settings": {
+    "title": "账户设置", "subtitle": "在下方更新您的用户名和密码。", "username": "用户名", "saveUsername": "保存", "reset": "重置", "password": "密码", "currentPassword": "当前密码", "newPassword": "新密码", "confirmNewPassword": "确认新密码", "passwordHint": "密码至少8位，需包含大小写字母、数字和特殊符号。", "changePassword": "修改密码", "saving": "保存中...", "updating": "更新中...",
+    "language": { "title": "语言", "description": "选择应用使用的语言。", "options": { "en": "English", "ja": "日本語", "uz": "O'zbekcha", "ru": "Русский", "tr": "Türkçe", "zh": "中文", "ko": "한국어" } }
+  },
+  "verify": { "title": "验证", "total": "总计：", "continueToSplit": "继续拆分", "addItem": "添加商品", "editItem": "编辑", "itemName": "名称", "itemNamePlaceholder": "例如：披萨", "price": "价格", "quantity": "数量", "save": "保存" },
+  "split": { "title": "拆分", "addPerson": "添加人员", "addBtn": "添加", "typeName": "输入姓名", "namePlaceholder": "例如：小明", "yourFriends": "您的好友", "total": "总计：", "done": "完成！", "eachPays": "每人：{{amount}}", "unassignedWarning": "{{count}}件商品未分配", "unassignedAlert": "{{count}}件商品尚未分配。是否继续？", "attention": "注意！", "yes": "是", "no": "否", "deleteTitle": "删除", "deleteConfirm": "确定要删除此人吗？" },
+  "finish": { "billSummary": "账单摘要", "receiptNum": "收据 #{{id}}", "totalAmount": "总金额", "byParticipant": "按参与者：", "byItem": "按商品：", "noParticipantData": "暂无参与者数据。", "noAllocationData": "暂无分配详情。", "complete": "完成结算" },
+  "scan": { "title": "扫描收据", "back": "返回", "sessionName": "名称", "sessionPlaceholder": "例如：餐厅", "language": "语言：", "processing": "处理中...", "uploading": "上传收据...", "scanBtn": "扫描", "cancel": "取消", "useMock": "示例收据", "allowCamera": "请允许摄像头访问", "lastPhoto": "上次照片已保存；重新拍摄将覆盖。" }
+}

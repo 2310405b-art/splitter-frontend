@@ -168,14 +168,85 @@
     "historyDetails": "Hisob tafsilotlari"
   },
   "settings": {
+    "title": "Hisob sozlamalari",
+    "subtitle": "Foydalanuvchi nomingiz va parolingizni quyida yangilang.",
+    "username": "Foydalanuvchi nomi",
+    "saveUsername": "Saqlash",
+    "reset": "Tiklash",
+    "password": "Parol",
+    "currentPassword": "Joriy parol",
+    "newPassword": "Yangi parol",
+    "confirmNewPassword": "Yangi parolni tasdiqlang",
+    "passwordHint": "Parol kamida 8 ta belgi bo'lib, katta va kichik harf, raqam va maxsus belgini o'z ichiga olishi kerak.",
+    "changePassword": "Parolni o'zgartirish",
+    "saving": "Saqlanmoqda...",
+    "updating": "Yangilanmoqda...",
     "language": {
       "title": "Til",
       "description": "Ilovada ishlatiladigan tilni tanlang.",
       "options": {
         "en": "Ingliz tili",
         "ja": "Yapon tili",
-        "uz": "O'zbek tili"
+        "uz": "O'zbek tili",
+        "ru": "Rus tili",
+        "tr": "Turk tili",
+        "zh": "Xitoy tili",
+        "ko": "Koreys tili"
       }
     }
+  },
+  "verify": {
+    "title": "Tekshirish",
+    "total": "Jami:",
+    "continueToSplit": "Taqsimlashga o'tish",
+    "addItem": "Mahsulot qo'shish",
+    "editItem": "Tahrirlash",
+    "itemName": "Nomi",
+    "itemNamePlaceholder": "Masalan: Pizza",
+    "price": "Narxi",
+    "quantity": "Soni",
+    "save": "Saqlash"
+  },
+  "split": {
+    "title": "Taqsimlash",
+    "addPerson": "Odam qo'shish",
+    "addBtn": "Qo'shish",
+    "typeName": "Ism yozing",
+    "namePlaceholder": "Masalan: Sardor",
+    "yourFriends": "Do'stlaringiz",
+    "total": "Jami:",
+    "done": "Tayyor!",
+    "eachPays": "Har biri: {{amount}}",
+    "unassignedWarning": "{{count}} ta mahsulot hali biriktirilmagan",
+    "unassignedAlert": "{{count}} ta mahsulot hali hech kimga biriktirilmagan. Davom etasizmi?",
+    "attention": "Diqqat!",
+    "yes": "Ha",
+    "no": "Yo'q",
+    "deleteTitle": "O'chirish",
+    "deleteConfirm": "Bu odamni o'chirishni xohlaysizmi?"
+  },
+  "finish": {
+    "billSummary": "Hisob xulosasi",
+    "receiptNum": "Chek #{{id}}",
+    "totalAmount": "Umumiy summa",
+    "byParticipant": "Ishtirokchilar bo'yicha:",
+    "byItem": "Mahsulotlar bo'yicha:",
+    "noParticipantData": "Ishtirokchilar ma'lumoti hali mavjud emas.",
+    "noAllocationData": "Taqsimlash tafsilotlari mavjud emas.",
+    "complete": "Yakunlash"
+  },
+  "scan": {
+    "title": "Chekni skanerlash",
+    "back": "Orqaga",
+    "sessionName": "Nom",
+    "sessionPlaceholder": "Masalan: Restoran",
+    "language": "til:",
+    "processing": "Qayta ishlanmoqda...",
+    "uploading": "Chek yuklanmoqda...",
+    "scanBtn": "Skanerlash",
+    "cancel": "Bekor qilish",
+    "useMock": "Namuna chek",
+    "allowCamera": "Kameraga ruxsat bering",
+    "lastPhoto": "Oxirgi surat saqlangan; qayta suratga olish uni o'zgartiradi."
   }
 }

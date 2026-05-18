@@ -181,14 +181,85 @@
     "historyDetails": "明細の詳細"
   },
   "settings": {
+    "title": "アカウント設定",
+    "subtitle": "以下のフォームでユーザー名とパスワードを更新してください。",
+    "username": "ユーザー名",
+    "saveUsername": "保存",
+    "reset": "リセット",
+    "password": "パスワード",
+    "currentPassword": "現在のパスワード",
+    "newPassword": "新しいパスワード",
+    "confirmNewPassword": "新しいパスワードを確認",
+    "passwordHint": "パスワードは8文字以上で、大文字・小文字・数字・記号を含めてください。",
+    "changePassword": "パスワードを変更",
+    "saving": "保存中...",
+    "updating": "更新中...",
     "language": {
       "title": "言語",
       "description": "アプリ全体で使用する言語を選択してください。",
       "options": {
         "en": "英語",
         "ja": "日本語",
-        "uz": "ウズベク語"
+        "uz": "ウズベク語",
+        "ru": "ロシア語",
+        "tr": "トルコ語",
+        "zh": "中国語",
+        "ko": "韓国語"
       }
     }
+  },
+  "verify": {
+    "title": "確認",
+    "total": "合計：",
+    "continueToSplit": "分割へ進む",
+    "addItem": "アイテムを追加",
+    "editItem": "編集",
+    "itemName": "名前",
+    "itemNamePlaceholder": "例：ピザ",
+    "price": "価格",
+    "quantity": "数量",
+    "save": "保存"
+  },
+  "split": {
+    "title": "分割",
+    "addPerson": "人を追加",
+    "addBtn": "追加",
+    "typeName": "名前を入力",
+    "namePlaceholder": "例：太郎",
+    "yourFriends": "友だちリスト",
+    "total": "合計：",
+    "done": "完了！",
+    "eachPays": "一人当たり：{{amount}}",
+    "unassignedWarning": "{{count}}件のアイテムが未割り当て",
+    "unassignedAlert": "{{count}}件のアイテムがまだ割り当てられていません。続けますか？",
+    "attention": "注意！",
+    "yes": "はい",
+    "no": "いいえ",
+    "deleteTitle": "削除",
+    "deleteConfirm": "この人を削除しますか？"
+  },
+  "finish": {
+    "billSummary": "明細の概要",
+    "receiptNum": "レシート #{{id}}",
+    "totalAmount": "合計金額",
+    "byParticipant": "参加者別：",
+    "byItem": "アイテム別：",
+    "noParticipantData": "参加者データはまだありません。",
+    "noAllocationData": "割り当ての詳細はありません。",
+    "complete": "精算完了"
+  },
+  "scan": {
+    "title": "レシートをスキャン",
+    "back": "戻る",
+    "sessionName": "セッション名",
+    "sessionPlaceholder": "例：カフェ",
+    "language": "言語：",
+    "processing": "処理中...",
+    "uploading": "レシートをアップロード中...",
+    "scanBtn": "スキャン",
+    "cancel": "キャンセル",
+    "useMock": "サンプルレシート",
+    "allowCamera": "カメラへのアクセスを許可してください",
+    "lastPhoto": "前回の写真が保存されています。再度撮影すると上書きされます。"
   }
 }

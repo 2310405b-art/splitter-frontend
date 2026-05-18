@@ -1,7 +1,42 @@
 import axios, { AxiosError } from 'axios';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 import { getToken } from '@/shared/lib/utils/token-storage';
 import { emitUnauthorized } from '@/shared/api/auth-events';
-const API_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3000';
+
+/**
+ * Avtomatik API URL aniqlash:
+ * 1. .env da EXPO_PUBLIC_API_URL ko'rsatilgan bo'lsa — shu ishlatiladi
+ * 2. Aks holda Expo debuggerHost (Metro bundler IP) dan IP olinadi
+ *    va backend port (3001) qo'shiladi.
+ * Bu sayohat qilganda yoki Wi-Fi tarmoq o'zgarganda .env ni
+ * har safar yangilash muammosini butunlay hal qiladi.
+ */
+function getApiUrl(): string {
+  // Agar .env da aniq ko'rsatilgan bo'lsa — uni ishlatamiz
+  const envUrl = process.env.EXPO_PUBLIC_API_URL;
+  if (envUrl) return envUrl;
+
+  // Expo Go / dev-client da Metro bundler host IP ni olish
+  const debuggerHost =
+    Constants.expoConfig?.hostUri ??
+    (Constants as any).manifest?.debuggerHost ??
+    (Constants as any).manifest2?.extra?.expoGo?.debuggerHost;
+
+  if (debuggerHost) {
+    // debuggerHost = "10.20.6.244:8081" — portni backend portiga almashtiramiz
+    const host = debuggerHost.split(':')[0];
+    return `http://${host}:3001`;
+  }
+
+  // Android emulator uchun maxsus IP
+  if (Platform.OS === 'android') return 'http://10.0.2.2:3001';
+
+  return 'http://localhost:3001';
+}
+
+const API_URL = getApiUrl();
+if (__DEV__) console.log('[API] Base URL:', API_URL);
 
 export const apiClient = axios.create({
   baseURL: API_URL,
@@ -50,13 +85,11 @@ apiClient.interceptors.response.use(
   },
   (error: AxiosError<any>) => {
     if (__DEV__) {
-      console.error('[API] Error details:', {
-        message: error.message,
-        code: (error as any).code,
-        response: error.response?.data,
-        status: error.response?.status,
-        headers: error.response?.headers,
-      });
+      console.error(`[API] Error: ${error.message} (Status: ${error.response?.status || 'UNKNOWN'})`);
+      if (error.response?.data) {
+        // Log data as string to avoid Metro circular JSON issues
+        console.log('[API] Error response data:', JSON.stringify(error.response.data));
+      }
     }
 
     if (error.response) {

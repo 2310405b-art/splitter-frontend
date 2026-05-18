@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router';
 import { YStack, XStack, Button, Paragraph, Input, Text, Spinner } from 'tamagui';
 import { ChevronLeft, AlertTriangle, Camera as CameraIcon } from '@tamagui/lucide-icons';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { useTranslation } from 'react-i18next';
 
 import {
   useReceiptSessionStore,
@@ -39,6 +40,7 @@ export default function ScanReceiptScreen() {
 
   const parsing = useReceiptSessionStore((s) => s.parsing);
   const parseReceipt = useReceiptSessionStore((s) => s.parseReceipt);
+  const parseQRReceipt = useReceiptSessionStore((s) => s.parseQRReceipt);
   const parseError = useReceiptSessionStore((s) => s.parseError);
   const setCapture = useReceiptSessionStore((s) => s.setCapture);
   const clearCapture = useReceiptSessionStore((s) => s.clearCapture);
@@ -52,6 +54,7 @@ export default function ScanReceiptScreen() {
   const [localError, setLocalError] = useState<string | null>(null);
 
   const language = appLanguage || DEFAULT_LANGUAGE;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (isFocused && !perm?.granted) requestPerm();
@@ -129,16 +132,37 @@ export default function ScanReceiptScreen() {
         },
       });
 
-      router.push('/tabs/sessions/participants');
+      router.push('/tabs/sessions/verify-items');
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Something went wrong while sending the receipt';
       setLocalError(message);
     }
   }, [cameraRef, parsing, sessionName, setSessionNameStore, setCapture, parseReceipt, language, router]);
 
+  const handleBarcodeScanned = useCallback(async (scanningResult: any) => {
+    if (parsing || localError) return;
+    
+    try {
+      setLocalError(null);
+      const preparedName = sessionName.trim() || getDefaultSessionName();
+      setSessionNameStore(preparedName);
+      
+      await parseQRReceipt({
+        sessionName: preparedName,
+        language,
+        qrText: scanningResult.data,
+      });
+
+      router.push('/tabs/sessions/verify-items');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Something went wrong while sending the QR data';
+      setLocalError(message);
+    }
+  }, [parsing, localError, sessionName, setSessionNameStore, parseQRReceipt, language, router]);
+
   const useMock = useCallback(() => {
     router.push({
-      pathname: '/tabs/sessions/participants',
+      pathname: '/tabs/sessions/verify-items',
       params: { receiptId: 'mock-001' },
     } as never);
   }, [router]);
@@ -167,9 +191,9 @@ export default function ScanReceiptScreen() {
             icon={<ChevronLeft size={18} color="white" />}
             color="white"
           >
-            Back
+            {t('scan.back')}
           </Button>
-          <Paragraph fow="700" fos="$6" col="white">Scan receipt</Paragraph>
+          <Paragraph fow="700" fos="$6" col="white">{t('scan.title')}</Paragraph>
           <YStack w={54} />
         </XStack>
       </View>
@@ -180,17 +204,19 @@ export default function ScanReceiptScreen() {
             ref={cameraRef}
             style={S.camera}
             facing="back"
+            barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+            onBarcodeScanned={parsing ? undefined : handleBarcodeScanned}
           />
         ) : (
           <YStack f={1} ai="center" jc="center">
-            {!perm ? <ActivityIndicator color="white" /> : <Paragraph col="$gray1">Allow camera access</Paragraph>}
+            {!perm ? <ActivityIndicator color="white" /> : <Paragraph col="$gray1">{t('scan.allowCamera')}</Paragraph>}
           </YStack>
         )}
 
         {parsing && (
           <View style={S.overlay}>
             <Spinner size="large" color="white" />
-            <Paragraph mt="$2" col="white">Uploading receipt...</Paragraph>
+            <Paragraph mt="$2" col="white">{t('scan.uploading')}</Paragraph>
           </View>
         )}
       </View>
@@ -199,12 +225,12 @@ export default function ScanReceiptScreen() {
         <YStack gap="$3">
           <YStack gap={8}>
             <Paragraph color="$gray1" fontSize={12}>
-              Session name
+              {t('scan.sessionName')}
             </Paragraph>
             <Input
               value={sessionName}
               onChangeText={handleSessionNameChange}
-              placeholder="e.g. Cafe on October"
+              placeholder={t('scan.sessionPlaceholder')}
               height={41}
               borderRadius={10}
               px={16}
@@ -216,14 +242,14 @@ export default function ScanReceiptScreen() {
           </YStack>
 
           <Paragraph color="$gray1" fontSize={12}>
-            language: <Text fontWeight="700" color="white">{language}</Text>
+            {t('scan.language')} <Text fontWeight="700" color="white">{language}</Text>
           </Paragraph>
 
           {storedCapture?.uri && (
             <XStack ai="center" gap="$2">
               <Image source={{ uri: storedCapture.uri }} style={S.preview} resizeMode="cover" />
               <Paragraph color="$gray1" fontSize={12}>
-                Last photo stored; capturing again will overwrite it.
+                {t('scan.lastPhoto')}
               </Paragraph>
             </XStack>
           )}
@@ -244,7 +270,7 @@ export default function ScanReceiptScreen() {
               disabled={parsing}
               opacity={parsing ? 0.6 : 1}
             >
-              Cancel
+              {t('scan.cancel')}
             </Button>
             <Button
               size="$3"
@@ -254,12 +280,12 @@ export default function ScanReceiptScreen() {
               disabled={disableAction}
               icon={parsing ? undefined : <CameraIcon size={18} color="white" />}
             >
-              {parsing ? 'Processing...' : 'Scan receipt'}
+              {parsing ? t('scan.processing') : t('scan.scanBtn')}
             </Button>
           </XStack>
 
           <Button size="$2" borderRadius="$3" theme="gray" variant="outlined" onPress={useMock} disabled={parsing}>
-            Use mock receipt
+            {t('scan.useMock')}
           </Button>
         </YStack>
       </View>

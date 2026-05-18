@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { YStack, XStack, Text, Button, Circle, ScrollView } from 'tamagui';
 import { Check } from '@tamagui/lucide-icons';
+import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { FinalizeTotalsByItem, FinalizeTotalsByParticipant, ReceiptAllocation } from '@/features/receipt/api/receipt.api';
 import { useReceiptSessionStore, type FinishPayload } from '@/features/receipt/model/receipt-session.store';
@@ -37,6 +38,7 @@ export default function FinishScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const lastFinishPayload = useReceiptSessionStore((s) => s.lastFinishPayload);
+  const { t } = useTranslation();
 
   const payload = useMemo<FinishPayload | null>(() => {
     if (data) {
@@ -426,11 +428,11 @@ export default function FinishScreen() {
         <XStack w="100%" ai="center" jc="flex-start" mb="$3">
           <YStack ai="flex-start">
             <Text fontSize={16} fontWeight="700">
-              Bill Summary
+              {t('finish.billSummary')}
             </Text>
             {receiptId && (
               <Text fontSize={12} color="$gray10">
-                Receipt #{receiptId}
+              {t('finish.receiptNum', { id: receiptId })}
               </Text>
             )}
           </YStack>
@@ -475,7 +477,7 @@ export default function FinishScreen() {
             mb="$3"
           >
             <Text fontSize={13} color="$gray11" mb="$1">
-              Total Amount
+              {t('finish.totalAmount')}
             </Text>
             <XStack ai="baseline" gap="$1">
               <Text fontSize={14} color="#2ECC71">
@@ -497,7 +499,7 @@ export default function FinishScreen() {
       >
         <YStack gap="$2">
           <Text fontSize={14} fontWeight="600" color="$gray11" mb="$1">
-            Split by participant:
+            {t('finish.byParticipant')}
           </Text>
           {participantSummaries.length > 0 ? (
             participantSummaries.map((summary) => {
@@ -535,7 +537,7 @@ export default function FinishScreen() {
             })
           ) : (
             <Text fontSize={13} color="$gray10">
-              No participant data available yet.
+              {t('finish.noParticipantData')}
             </Text>
           )}
         </YStack>
@@ -543,7 +545,7 @@ export default function FinishScreen() {
         {itemSummaries.length > 0 && (
           <YStack gap="$2" mt="$4">
             <Text fontSize={14} fontWeight="600" color="$gray11" mb="$1">
-              Split by item:
+              {t('finish.byItem')}
             </Text>
             {itemSummaries.map((item) => {
               const itemParts = getCurrencyParts(item.total, currency);
@@ -598,7 +600,7 @@ export default function FinishScreen() {
                     </YStack>
                   ) : (
                     <Text fontSize={12} color="$gray9">
-                      No allocation details available.
+                      {t('finish.noAllocationData')}
                     </Text>
                   )}
                 </YStack>
@@ -626,7 +628,7 @@ export default function FinishScreen() {
           pressStyle={{ opacity: 0.9 }}
         >
           <Text fontSize={16} fontWeight="600" color="white">
-            Complete settlement
+            {t('finish.complete')}
           </Text>
         </Button>
       </YStack>

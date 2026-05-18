@@ -1,7 +1,7 @@
 // app/tabs/settings.tsx
 import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
-import { YStack, Text, Separator, XStack } from 'tamagui';
+import { YStack, Text, Separator, XStack, Circle } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -151,10 +151,10 @@ export default function SettingsScreen() {
               {/* Header */}
               <YStack space="$3" mt="$4">
                 <Text fontSize={20} fontWeight="700">
-                  Account settings
+                  {t('settings.title')}
                 </Text>
                 <Text color="$gray10">
-                  Update your username and password using the forms below.
+                  {t('settings.subtitle')}
                 </Text>
               </YStack>
 
@@ -163,31 +163,34 @@ export default function SettingsScreen() {
                 <Text fontSize={16} fontWeight="600">
                   {t('settings.language.title', 'Language')}
                 </Text>
-                <Text fontSize={14} color="$gray10">
-                  {t('settings.language.description', 'Choose the language used across the app.')}
-                </Text>
 
-                <XStack
-                  space="$2"
-                  backgroundColor="$gray3"
-                  borderRadius="$8"
-                  padding="$1"
-                  flexWrap="wrap"
-                >
+                <XStack flexWrap="wrap" gap="$2">
                   {LANGUAGE_OPTIONS.map((option) => {
                     const isActive = option.code === language;
-                    const label = t(
-                      `settings.language.options.${option.code}`,
-                      option.shortLabel
-                    );
                     return (
-                      <Button
+                      <XStack
                         key={option.code}
-                        title={label}
-                        variant={isActive ? 'primary' : 'outline'}
-                        size="small"
+                        ai="center"
+                        gap="$2"
+                        px="$3"
+                        py="$2"
+                        borderRadius={12}
+                        borderWidth={isActive ? 2 : 1}
+                        borderColor={isActive ? '#2ECC71' : '$gray5'}
+                        bg={isActive ? '#2ECC711A' : '$color1'}
                         onPress={() => handleLanguageChange(option.code)}
-                      />
+                        pressStyle={{ opacity: 0.8 }}
+                        cursor="pointer"
+                      >
+                        <Circle size={28} bg={option.color}>
+                          <Text color="white" fontWeight="700" fontSize={11}>
+                            {option.shortLabel}
+                          </Text>
+                        </Circle>
+                        <Text fontSize={14} fontWeight={isActive ? '700' : '500'}>
+                          {option.nativeName}
+                        </Text>
+                      </XStack>
                     );
                   })}
                 </XStack>
@@ -197,24 +200,24 @@ export default function SettingsScreen() {
 
               {/* USERNAME */}
               <YStack space="$3">
-                <Text fontSize={16} fontWeight="600">Username</Text>
+                <Text fontSize={16} fontWeight="600">{t('settings.username')}</Text>
                 <Input
                   value={usernameValue}
                   onChangeText={setUsernameValue}
-                  placeholder="Enter a new username"
+                  placeholder={t('profile.info.usernamePlaceholder')}
                   textInputProps={{ autoCapitalize: 'none', autoCorrect: false }}
                   error={usernameError || undefined}
                 />
                 <XStack space="$2">
                   <Button
-                    title={isUpdatingUsername ? 'Saving...' : 'Save username'}
+                    title={isUpdatingUsername ? t('settings.saving') : t('settings.saveUsername')}
                     variant="primary"
                     size="medium"
                     disabled={!usernameDirty || isUpdatingUsername}
                     onPress={handleSaveUsername}
                   />
                   <Button
-                    title="Reset"
+                    title={t('settings.reset')}
                     variant="outline"
                     size="medium"
                     disabled={!usernameDirty}
@@ -227,31 +230,31 @@ export default function SettingsScreen() {
 
               {/* PASSWORD */}
               <YStack space="$3">
-                <Text fontSize={16} fontWeight="600">Password</Text>
+                <Text fontSize={16} fontWeight="600">{t('settings.password')}</Text>
                 <PasswordInput
                   value={currentPassword}
                   onChangeText={setCurrentPassword}
-                  placeholder="Current password"
+                  placeholder={t('settings.currentPassword')}
                   textInputProps={{ returnKeyType: 'next' }}
                 />
                 <PasswordInput
                   value={newPassword}
                   onChangeText={setNewPassword}
-                  placeholder="New password"
+                  placeholder={t('settings.newPassword')}
                   textInputProps={{ returnKeyType: 'next' }}
                 />
                 <Text fontSize={12} color="$gray10">
-                  Password must be at least 8 characters and include uppercase, lowercase, number, and special symbol.
+                  {t('settings.passwordHint')}
                 </Text>
                 <PasswordInput
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
-                  placeholder="Confirm new password"
+                  placeholder={t('settings.confirmNewPassword')}
                   error={passwordError || undefined}
                   textInputProps={{ returnKeyType: 'done' }}
                 />
                 <Button
-                  title={isChangingPassword ? 'Updating...' : 'Change password'}
+                  title={isChangingPassword ? t('settings.updating') : t('settings.changePassword')}
                   variant="primary"
                   size="medium"
                   disabled={isChangingPassword}
