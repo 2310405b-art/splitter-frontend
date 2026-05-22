@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Animated, LayoutChangeEvent, Pressable } from 'react-native';
-import { XStack, Text, View } from 'tamagui';
+import { XStack, YStack, Text, View } from 'tamagui';
 import { LANGUAGE_OPTIONS, type LanguageCode } from '@/shared/config/languages';
 
 interface LanguageSegmentedControlProps {
@@ -23,7 +23,7 @@ export function LanguageSegmentedControl({
   const count = options.length;
   const gap = 6;       // расстояние между сегментами
   const padding = 6;   // внутренние отступы контейнера
-  const height = 40;   // высота сегмента
+  const height = 44;   // высота сегмента (увеличена для двустрочного макета)
   const thumbAnim = useRef(new Animated.Value(0)).current;
 
   // ширина одного сегмента (равномерно)
@@ -85,7 +85,6 @@ export function LanguageSegmentedControl({
         {/* кнопки */}
         {options.map((opt, idx) => {
           const active = idx === selectedIndex;
-          const label = getLabel ? getLabel(opt.code, opt.shortLabel) : opt.shortLabel;
           return (
             <Pressable
               key={opt.code}
@@ -103,14 +102,19 @@ export function LanguageSegmentedControl({
                 zIndex: 1, // выше "пальца"
               }}
             >
-              <Text
-                fontSize={13}
-                fontWeight="700"
-                // цвета читаемые и контрастные
-                color={active ? '$gray12' : '$gray11'}
-              >
-                {label}
-              </Text>
+              <YStack ai="center" jc="center" gap={0}>
+                <Text fontSize={15} lineHeight={16}>
+                  {opt.flag}
+                </Text>
+                <Text
+                  fontSize={9}
+                  fontWeight="700"
+                  color={active ? '$gray12' : '$gray11'}
+                  lineHeight={10}
+                >
+                  {opt.code}
+                </Text>
+              </YStack>
             </Pressable>
           );
         })}

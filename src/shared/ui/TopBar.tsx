@@ -2,7 +2,7 @@ import React from 'react';
 import { Alert } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { XStack, YStack, Text, Circle } from 'tamagui';
-import { Bell } from '@tamagui/lucide-icons';
+import { Bell, Sun, Moon } from '@tamagui/lucide-icons';
 import { useRouter } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import { useAppStore } from '@/shared/lib/stores/app-store';
@@ -17,7 +17,7 @@ type Props = {
 export default function TopBar({ title, greeting = false }: Props) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { user, logout } = useAppStore();
+  const { user, logout, theme, setTheme } = useAppStore();
   const userInitial = (user?.username?.[0] ?? 'U').toUpperCase();
 
   // безопасно читаем количество заявок (без жёстких типов)
@@ -62,7 +62,7 @@ export default function TopBar({ title, greeting = false }: Props) {
   };
 
   return (
-    <SafeAreaView edges={['top']} style={{ backgroundColor: 'white', paddingTop: insets.top }}>
+    <SafeAreaView edges={['top']} style={{ backgroundColor: theme === 'dark' ? '#111827' : 'white', paddingTop: insets.top }}>
       <XStack
         ai="center"
         jc="space-between"
@@ -80,6 +80,21 @@ export default function TopBar({ title, greeting = false }: Props) {
         </YStack>
 
         <XStack ai="center" gap="$3">
+          {/* Theme Toggle Button (Oy va Quyosh) */}
+          <XStack
+            ai="center"
+            p="$1.5"
+            borderRadius={8}
+            pressStyle={{ opacity: 0.7, scale: 0.95 }}
+            onPress={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ? (
+              <Sun size={20} color="#F1C40F" />
+            ) : (
+              <Moon size={20} color="$gray11" />
+            )}
+          </XStack>
+
           <XStack ai="center" position="relative" pressStyle={{ opacity: 0.7 }} onPress={onBellPress}>
             <Bell size={20} color="$gray11" />
             {requestsCount > 0 && (

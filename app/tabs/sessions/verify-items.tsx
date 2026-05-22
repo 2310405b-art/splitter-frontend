@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { YStack, XStack, Text, Button, ScrollView, Input, Sheet } from 'tamagui';
 import { ChevronLeft, Plus, Trash2, Pencil } from '@tamagui/lucide-icons';
 import { useReceiptSessionStore, ReceiptSplitItem } from '@/features/receipt/model/receipt-session.store';
@@ -89,7 +90,7 @@ export default function VerifyItemsScreen() {
 
   return (
     <YStack f={1} bg="$background" position="relative">
-      <YStack bg="$background" p="$4" pb="$2">
+      <YStack bg="$background" px="$4" pb="$2" pt={(insets?.top ?? 0) + 16}>
         <XStack w="100%" ai="center" jc="space-between" mb="$3">
           <Button size="$3" chromeless onPress={goBack} icon={<ChevronLeft size={24} color="$color" />} ml="$-3" />
           <YStack ai="center">
@@ -130,31 +131,37 @@ export default function VerifyItemsScreen() {
         </Button>
       </YStack>
 
-      <Sheet modal open={!!editingItem || isAdding} onOpenChange={closeEdit} snapPoints={[60]} position={0} dismissOnSnapToBottom>
+      <Sheet modal open={!!editingItem || isAdding} onOpenChange={closeEdit} snapPoints={[80, 60]} position={0} dismissOnSnapToBottom moveOnKeyboardChange>
         <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
         <Sheet.Frame p="$4" gap="$4" bg="$background">
           <Sheet.Handle />
-          <Text fontSize={20} fontWeight="700">{isAdding ? t('verify.addItem') : t('verify.editItem')}</Text>
-          
-          <YStack gap="$2">
-            <Text fontSize={14} color="$gray10">{t('verify.itemName')}</Text>
-            <Input value={editName} onChangeText={setEditName} placeholder={t('verify.itemNamePlaceholder')} h={44} />
-          </YStack>
-          
-          <XStack gap="$3">
-            <YStack gap="$2" f={1}>
-              <Text fontSize={14} color="$gray10">{t('verify.price')} ({currency})</Text>
-              <Input value={editPrice} onChangeText={setEditPrice} keyboardType="numeric" placeholder="0.00" h={44} />
-            </YStack>
-            <YStack gap="$2" w={100}>
-              <Text fontSize={14} color="$gray10">{t('verify.quantity')}</Text>
-              <Input value={editQty} onChangeText={setEditQty} keyboardType="numeric" placeholder="1" h={44} />
-            </YStack>
-          </XStack>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+              <YStack gap="$4" pb="$8">
+                <Text fontSize={20} fontWeight="700">{isAdding ? t('verify.addItem') : t('verify.editItem')}</Text>
+                
+                <YStack gap="$2">
+                  <Text fontSize={14} color="$gray10">{t('verify.itemName')}</Text>
+                  <Input value={editName} onChangeText={setEditName} placeholder={t('verify.itemNamePlaceholder')} h={44} />
+                </YStack>
+                
+                <XStack gap="$3">
+                  <YStack gap="$2" f={1}>
+                    <Text fontSize={14} color="$gray10">{t('verify.price')} ({currency})</Text>
+                    <Input value={editPrice} onChangeText={setEditPrice} keyboardType="numeric" placeholder="0.00" h={44} />
+                  </YStack>
+                  <YStack gap="$2" w={100}>
+                    <Text fontSize={14} color="$gray10">{t('verify.quantity')}</Text>
+                    <Input value={editQty} onChangeText={setEditQty} keyboardType="numeric" placeholder="1" h={44} />
+                  </YStack>
+                </XStack>
 
-          <Button size="$4" backgroundColor="#2ECC71" mt="$4" onPress={saveEdit}>
-            <Text color="white" fontWeight="600">{t('verify.save')}</Text>
-          </Button>
+                <Button size="$4" backgroundColor="#2ECC71" mt="$4" onPress={saveEdit}>
+                  <Text color="white" fontWeight="600">{t('verify.save')}</Text>
+                </Button>
+              </YStack>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </Sheet.Frame>
       </Sheet>
     </YStack>

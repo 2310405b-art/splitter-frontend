@@ -631,16 +631,34 @@ export default function ItemsSplitScreen() {
 
       const fallbackFinalization = buildLocalFinalization(items, participants);
 
-      const result = await ReceiptApi.finalize({
-      sessionId: effectiveSessionId,
-      sessionName: session?.sessionName || 'Split Session',
-      participants: participants.map((p) => ({
-        uniqueId: p.uniqueId,
-        username: p.username,
-      })),
-      items: finalizeItems,
-      currency: storeCurrency, // ✅ Добавьте эту строку
-    });
+      let result;
+      try {
+        result = await ReceiptApi.finalize({
+          sessionId: effectiveSessionId,
+          sessionName: session?.sessionName || 'Split Session',
+          participants: participants.map((p) => ({
+            uniqueId: p.uniqueId,
+            username: p.username,
+          })),
+          items: finalizeItems,
+          currency: storeCurrency,
+        });
+      } catch (finalizeErr) {
+        console.warn('Backend finalization failed, falling back to local calculation:', finalizeErr);
+        result = {
+          sessionId: effectiveSessionId,
+          sessionName: session?.sessionName || 'Split Session',
+          status: 'COMPLETED',
+          createdAt: new Date().toISOString(),
+          totals: {
+            grandTotal: fallbackFinalization.grandTotal,
+            currency: storeCurrency || 'UZS',
+            byParticipant: fallbackFinalization.totalsByParticipant,
+            byItem: fallbackFinalization.totalsByItem,
+          },
+          allocations: fallbackFinalization.allocations,
+        };
+      }
 
       const backendByParticipant = result.totals?.byParticipant ?? [];
       const hasBackendByParticipant = backendByParticipant.length > 0;
@@ -775,7 +793,7 @@ export default function ItemsSplitScreen() {
   return (
     <YStack f={1} bg="$background" position="relative">
       {/* Header */}
-      <YStack bg="$background" p="$4" pb="$2">
+      <YStack bg="$background" px="$4" pb="$2" pt={(insets?.top ?? 0) + 16}>
         <XStack w="100%" ai="center" jc="flex-start" mb="$3">
           <YStack ai="flex-start">
             <Text fontSize={16} fontWeight="700">
@@ -991,7 +1009,7 @@ export default function ItemsSplitScreen() {
           pt={insets.top + 12}
         >
           <YStack
-            w={358}
+            w="92%"
             maxWidth={358}
             h={(editingItem?.quantity || 1) > 1 ? 666 : 588}
             bg="$color1"

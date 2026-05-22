@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { YStack, Text, Separator, XStack, Circle } from 'tamagui';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Sun, Moon } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/shared/ui/Button';
@@ -14,7 +15,7 @@ import { changePassword, updateUsername } from '@/features/auth/api';
 import { LANGUAGE_OPTIONS, type LanguageCode } from '@/shared/config/languages';
 
 export default function SettingsScreen() {
-  const { user, setUser, language, setLanguage } = useAppStore();
+  const { user, setUser, language, setLanguage, theme, setTheme } = useAppStore();
   const { t } = useTranslation();
   const isLoggedIn = !!user;
 
@@ -135,7 +136,7 @@ export default function SettingsScreen() {
   }, [currentPassword, newPassword, confirmPassword, passwordError]);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme === 'dark' ? '#111827' : 'white' }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -168,12 +169,13 @@ export default function SettingsScreen() {
                   {LANGUAGE_OPTIONS.map((option) => {
                     const isActive = option.code === language;
                     return (
-                      <XStack
+                      <YStack
                         key={option.code}
                         ai="center"
+                        jc="center"
                         gap="$2"
-                        px="$3"
-                        py="$2"
+                        w={76}
+                        h={76}
                         borderRadius={12}
                         borderWidth={isActive ? 2 : 1}
                         borderColor={isActive ? '#2ECC71' : '$gray5'}
@@ -182,17 +184,72 @@ export default function SettingsScreen() {
                         pressStyle={{ opacity: 0.8 }}
                         cursor="pointer"
                       >
-                        <Circle size={28} bg={option.color}>
-                          <Text color="white" fontWeight="700" fontSize={11}>
-                            {option.shortLabel}
+                        <Circle size={32} bg={option.color} ai="center" jc="center">
+                          <Text fontSize={18}>
+                            {option.flag}
                           </Text>
                         </Circle>
-                        <Text fontSize={14} fontWeight={isActive ? '700' : '500'}>
-                          {option.nativeName}
+                        <Text fontSize={11} fontWeight={isActive ? '700' : '500'} color={isActive ? '$gray12' : '$gray10'}>
+                          {option.code}
                         </Text>
-                      </XStack>
+                      </YStack>
                     );
                   })}
+                </XStack>
+              </YStack>
+
+              <Separator />
+
+              {/* THEME */}
+              <YStack space="$3">
+                <Text fontSize={16} fontWeight="600">
+                  {t('settings.theme.title', 'Theme')}
+                </Text>
+
+                <XStack gap="$2">
+                  <YStack
+                    ai="center"
+                    jc="center"
+                    gap="$2"
+                    w={112}
+                    h={76}
+                    borderRadius={12}
+                    borderWidth={theme === 'light' ? 2 : 1}
+                    borderColor={theme === 'light' ? '#2ECC71' : '$gray5'}
+                    bg={theme === 'light' ? '#2ECC711A' : '$color1'}
+                    onPress={() => setTheme('light')}
+                    pressStyle={{ opacity: 0.8 }}
+                    cursor="pointer"
+                  >
+                    <Circle size={32} bg="$gray3" ai="center" jc="center">
+                      <Sun size={20} color={theme === 'light' ? '#F39C12' : '$gray11'} />
+                    </Circle>
+                    <Text fontSize={11} fontWeight={theme === 'light' ? '700' : '500'} color={theme === 'light' ? '$gray12' : '$gray10'}>
+                      {t('settings.theme.light', 'Light')}
+                    </Text>
+                  </YStack>
+
+                  <YStack
+                    ai="center"
+                    jc="center"
+                    gap="$2"
+                    w={112}
+                    h={76}
+                    borderRadius={12}
+                    borderWidth={theme === 'dark' ? 2 : 1}
+                    borderColor={theme === 'dark' ? '#2ECC71' : '$gray5'}
+                    bg={theme === 'dark' ? '#2ECC711A' : '$color1'}
+                    onPress={() => setTheme('dark')}
+                    pressStyle={{ opacity: 0.8 }}
+                    cursor="pointer"
+                  >
+                    <Circle size={32} bg="$gray3" ai="center" jc="center">
+                      <Moon size={20} color={theme === 'dark' ? '#9B59B6' : '$gray11'} />
+                    </Circle>
+                    <Text fontSize={11} fontWeight={theme === 'dark' ? '700' : '500'} color={theme === 'dark' ? '$gray12' : '$gray10'}>
+                      {t('settings.theme.dark', 'Dark')}
+                    </Text>
+                  </YStack>
                 </XStack>
               </YStack>
 

@@ -11,7 +11,7 @@ import { ScanLine } from '@tamagui/lucide-icons';
 
 const languages = LANGUAGE_OPTIONS.map((option) => ({
   code: option.code,
-  name: option.shortLabel,
+  name: option.flag,
 }));
 
 export default function Welcome() {
@@ -40,17 +40,23 @@ export default function Welcome() {
                 key={lang.code}
                 backgroundColor={currentLanguage === lang.code ? "#2ECC71" : "transparent"}
                 borderRadius="$6"
-                paddingHorizontal="$3"
-                paddingVertical="$2"
+                paddingHorizontal="$2.5"
+                paddingVertical="$1"
+                ai="center"
+                jc="center"
                 pressStyle={{ opacity: 0.7 }}
                 onPress={() => changeLanguage(lang.code)}
               >
-                <Text 
-                  fontSize="$2" 
-                  fontWeight="600"
-                  color={currentLanguage === lang.code ? "#FFFFFF" : "$gray11"}
-                >
+                <Text fontSize={15} lineHeight={16}>
                   {lang.name}
+                </Text>
+                <Text 
+                  fontSize={9} 
+                  fontWeight="700"
+                  color={currentLanguage === lang.code ? "#FFFFFF" : "$gray11"}
+                  lineHeight={10}
+                >
+                  {lang.code}
                 </Text>
               </YStack>
             ))}

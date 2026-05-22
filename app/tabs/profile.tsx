@@ -1,10 +1,10 @@
-﻿import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert, Animated, KeyboardAvoidingView, Platform, ScrollView, TextInputProps } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as Clipboard from 'expo-clipboard';
 import * as ImagePicker from 'expo-image-picker';
 import { YStack, XStack, Text, Button, Separator, Spinner } from 'tamagui';
-import { Copy, LogOut, Upload, RotateCcw, CheckCircle, User as UserIcon, Mail, Lock, Edit3, X, Check, Languages } from '@tamagui/lucide-icons';
+import { Copy, LogOut, Upload, RotateCcw, CheckCircle, User as UserIcon, Mail, Lock, Edit3, X, Check, Languages, Sun, Moon } from '@tamagui/lucide-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { ScreenContainer } from '@/shared/ui/ScreenContainer';
@@ -268,7 +268,7 @@ function EditableFieldRow({
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { user, logout, setUser } = useAppStore();
+  const { user, logout, setUser, theme, setTheme } = useAppStore();
 
   // language from store
   const language = useAppStore((s) => s.language);
@@ -702,15 +702,15 @@ export default function ProfileScreen() {
   const isResetDisabled = isResettingAvatar || (!user?.avatarUrl && !previewUri);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme === 'dark' ? '#111827' : 'white' }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.select({ ios: 0, android: 0 }) ?? 0}
       >
         <ScrollView
-          style={{ flex: 1, backgroundColor: 'white' }}
-          contentContainerStyle={{ flexGrow: 1, paddingBottom: 32, backgroundColor: 'white' }}
+          style={{ flex: 1, backgroundColor: theme === 'dark' ? '#111827' : 'white' }}
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: 32, backgroundColor: theme === 'dark' ? '#111827' : 'white' }}
           keyboardShouldPersistTaps="handled"
         >
           <ScreenContainer>
@@ -772,6 +772,52 @@ export default function ProfileScreen() {
                     onChange={(code) => setLanguage(code)}
                     getLabel={(code, fallback) => t(`settings.language.options.${code}`, fallback)}
                   />
+                </YStack>
+              </SectionCard>
+
+              {/* Theme (Dark / Light mode) */}
+              <SectionCard
+                title={t('settings.theme.title', 'Theme')}
+                icon={theme === 'dark' ? <Moon size={18} color="$gray11" /> : <Sun size={18} color="$gray11" />}
+              >
+                <YStack gap="$3">
+                  <Text fontSize={12} color="$gray9">
+                    {t('settings.theme.description', 'Select the application theme.')}
+                  </Text>
+
+                  <XStack gap="$2" w="100%">
+                    <Button
+                      flex={1}
+                      h={45}
+                      borderRadius={10}
+                      borderWidth={theme === 'light' ? 2 : 1}
+                      borderColor={theme === 'light' ? '#2ECC71' : '$gray5'}
+                      bg={theme === 'light' ? '#2ECC711A' : '$background'}
+                      onPress={() => setTheme('light')}
+                      icon={<Sun size={18} color={theme === 'light' ? '#F39C12' : '$gray11'} />}
+                      pressStyle={{ opacity: 0.8 }}
+                    >
+                      <Text fontSize={14} fontWeight={theme === 'light' ? '700' : '500'} color={theme === 'light' ? '$gray12' : '$gray10'}>
+                        {t('settings.theme.light', 'Light')}
+                      </Text>
+                    </Button>
+
+                    <Button
+                      flex={1}
+                      h={45}
+                      borderRadius={10}
+                      borderWidth={theme === 'dark' ? 2 : 1}
+                      borderColor={theme === 'dark' ? '#2ECC71' : '$gray5'}
+                      bg={theme === 'dark' ? '#2ECC711A' : '$background'}
+                      onPress={() => setTheme('dark')}
+                      icon={<Moon size={18} color={theme === 'dark' ? '#9B59B6' : '$gray11'} />}
+                      pressStyle={{ opacity: 0.8 }}
+                    >
+                      <Text fontSize={14} fontWeight={theme === 'dark' ? '700' : '500'} color={theme === 'dark' ? '$gray12' : '$gray10'}>
+                        {t('settings.theme.dark', 'Dark')}
+                      </Text>
+                    </Button>
+                  </XStack>
                 </YStack>
               </SectionCard>
 

@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Pressable, Alert } from 'react-native';
+import { Pressable, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { YStack, XStack, Text, Button, ScrollView, Input, Circle, Sheet, Separator } from 'tamagui';
 import { ChevronLeft, Plus, X, Check, Users } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
 import { useReceiptSessionStore } from '@/features/receipt/model/receipt-session.store';
 import { useAppStore } from '@/shared/lib/stores/app-store';
 import { useFriendsStore } from '@/features/friends/model/friends.store';
+import { ReceiptApi } from '@/features/receipt/api/receipt.api';
+import type { FinalizeReceiptItemPayload } from '@/features/receipt/api/receipt.api';
 
 // ==================== COLORS ====================
 const PERSON_COLORS = [
@@ -174,7 +176,7 @@ export default function SimpleSplitScreen() {
     }
   }, [unassignedCount, personTotals, people, storeItems, assignments, currency, session]);
 
-  const doFinish = useCallback(() => {
+  const doFinish = useCallback(async () => {
     const participants = people.map((p) => ({
       uniqueId: p.id === 'me' ? (me?.uniqueId || 'me') : p.id,
       username: p.name,
@@ -205,16 +207,49 @@ export default function SimpleSplitScreen() {
       }));
     });
 
+    const finalizeItems: FinalizeReceiptItemPayload[] = storeItems.map((item) => {
+      const assigned = assignments[item.id] || [];
+      let mappedAssigned = assigned.map(pid => pid === 'me' ? (me?.uniqueId || 'me') : pid);
+      if (mappedAssigned.length === 0) {
+        mappedAssigned = [me?.uniqueId || 'me'];
+      }
+      return {
+        id: item.id,
+        name: item.name,
+        price: item.unitPrice,
+        quantity: item.quantity,
+        kind: item.kind,
+        splitMode: 'equal' as const,
+        assignedTo: mappedAssigned,
+      };
+    });
+
+    let finalizeResult;
+    if (session?.sessionId) {
+      try {
+        finalizeResult = await ReceiptApi.finalize({
+          sessionId: session.sessionId,
+          sessionName: session.sessionName || 'Split Session',
+          participants,
+          items: finalizeItems,
+          currency,
+        });
+      } catch (err) {
+        console.warn('Backend finalization failed in simple-split, using local calculation fallback:', err);
+      }
+    }
+
     const payload = {
       sessionId: session?.sessionId,
       sessionName: session?.sessionName,
       participants,
-      totalsByParticipant,
-      totalsByItem,
-      allocations,
-      grandTotal,
-      currency,
-      status: 'COMPLETED',
+      totalsByParticipant: finalizeResult?.totals?.byParticipant || totalsByParticipant,
+      totalsByItem: finalizeResult?.totals?.byItem || totalsByItem,
+      allocations: finalizeResult?.allocations || allocations,
+      grandTotal: finalizeResult?.totals?.grandTotal || grandTotal,
+      currency: finalizeResult?.totals?.currency || currency,
+      status: finalizeResult?.status || 'COMPLETED',
+      createdAt: finalizeResult?.createdAt,
     };
 
     setLastFinishPayload(payload);
@@ -225,7 +260,7 @@ export default function SimpleSplitScreen() {
   return (
     <YStack f={1} bg="$background">
       {/* ====== HEADER ====== */}
-      <YStack bg="$background" p="$4" pb="$2" borderBottomWidth={1} borderColor="$gray4">
+      <YStack bg="$background" px="$4" pb="$2" pt={(insets?.top ?? 0) + 16} borderBottomWidth={1} borderColor="$gray4">
         <XStack w="100%" ai="center" jc="space-between" mb="$2">
           <Button size="$3" chromeless onPress={() => router.back()} icon={<ChevronLeft size={24} />} ml="$-3" />
           <YStack ai="center">
@@ -448,73 +483,80 @@ export default function SimpleSplitScreen() {
         modal
         open={showAddSheet}
         onOpenChange={setShowAddSheet}
-        snapPoints={[55]}
+        snapPoints={[85, 55]}
         position={0}
         dismissOnSnapToBottom
+        moveOnKeyboardChange
       >
         <Sheet.Overlay animation="lazy" enterStyle={{ opacity: 0 }} exitStyle={{ opacity: 0 }} />
         <Sheet.Frame p="$4" gap="$3" bg="$background">
           <Sheet.Handle />
-          <Text fontSize={20} fontWeight="700">{t('split.addPerson')}</Text>
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1 }}>
+            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+              <YStack gap="$4" pb="$8">
+                <Text fontSize={20} fontWeight="700">{t('split.addPerson')}</Text>
 
-          {/* Manual name input */}
-          <YStack gap="$2">
-            <Text fontSize={14} color="$gray10">{t('split.typeName')}</Text>
-            <XStack gap="$2" ai="center">
-              <Input
-                f={1}
-                value={newName}
-                onChangeText={setNewName}
-                placeholder={t('split.namePlaceholder')}
-                h={44}
-                autoFocus
-                onSubmitEditing={addPerson}
-              />
-              <Button
-                size="$4"
-                h={44}
-                backgroundColor="#2ECC71"
-                borderRadius={10}
-                onPress={addPerson}
-                disabled={!newName.trim()}
-                opacity={newName.trim() ? 1 : 0.5}
-              >
-                <Plus size={18} color="white" />
-              </Button>
-            </XStack>
-          </YStack>
-
-          {/* Friends from account */}
-          {availableFriends.length > 0 && (
-            <YStack gap="$2">
-              <XStack ai="center" gap="$2">
-                <Users size={16} color="$gray10" />
-                <Text fontSize={14} color="$gray10">{t('split.yourFriends')}</Text>
-              </XStack>
-              <ScrollView showsVerticalScrollIndicator={false} maxHeight={200}>
-                <YStack borderWidth={1} borderColor="$gray5" borderRadius={10} overflow="hidden">
-                  {availableFriends.map((friend, idx) => (
-                    <React.Fragment key={friend.uid}>
-                      <Pressable onPress={() => addFriendAsPerson(friend.name, friend.uid)}>
-                        <XStack h={48} ai="center" jc="space-between" px="$3" bg="$color1">
-                          <XStack ai="center" gap="$3">
-                            <Circle size={32} bg="$gray5">
-                              <Text color="white" fontWeight="700" fontSize={13}>
-                                {friend.name[0]?.toUpperCase() || '?'}
-                              </Text>
-                            </Circle>
-                            <Text fontSize={15} fontWeight="500">{friend.name}</Text>
-                          </XStack>
-                          <Plus size={18} color="#2ECC71" />
-                        </XStack>
-                      </Pressable>
-                      {idx < availableFriends.length - 1 && <Separator />}
-                    </React.Fragment>
-                  ))}
+                {/* Manual name input */}
+                <YStack gap="$2">
+                  <Text fontSize={14} color="$gray10">{t('split.typeName')}</Text>
+                  <XStack gap="$2" ai="center">
+                    <Input
+                      f={1}
+                      value={newName}
+                      onChangeText={setNewName}
+                      placeholder={t('split.namePlaceholder')}
+                      h={44}
+                      autoFocus
+                      onSubmitEditing={addPerson}
+                    />
+                    <Button
+                      size="$4"
+                      h={44}
+                      backgroundColor="#2ECC71"
+                      borderRadius={10}
+                      onPress={addPerson}
+                      disabled={!newName.trim()}
+                      opacity={newName.trim() ? 1 : 0.5}
+                    >
+                      <Plus size={18} color="white" />
+                    </Button>
+                  </XStack>
                 </YStack>
-              </ScrollView>
-            </YStack>
-          )}
+
+                {/* Friends from account */}
+                {availableFriends.length > 0 && (
+                  <YStack gap="$2">
+                    <XStack ai="center" gap="$2">
+                      <Users size={16} color="$gray10" />
+                      <Text fontSize={14} color="$gray10">{t('split.yourFriends')}</Text>
+                    </XStack>
+                    <ScrollView showsVerticalScrollIndicator={false} maxHeight={200}>
+                      <YStack borderWidth={1} borderColor="$gray5" borderRadius={10} overflow="hidden">
+                        {availableFriends.map((friend, idx) => (
+                          <React.Fragment key={friend.uid}>
+                            <Pressable onPress={() => addFriendAsPerson(friend.name, friend.uid)}>
+                              <XStack h={48} ai="center" jc="space-between" px="$3" bg="$color1">
+                                <XStack ai="center" gap="$3">
+                                  <Circle size={32} bg="$gray5">
+                                    <Text color="white" fontWeight="700" fontSize={13}>
+                                      {friend.name[0]?.toUpperCase() || '?'}
+                                    </Text>
+                                  </Circle>
+                                  <Text fontSize={15} fontWeight="500">{friend.name}</Text>
+                                </XStack>
+                                <Plus size={18} color="#2ECC71" />
+                              </XStack>
+                            </Pressable>
+                            {idx < availableFriends.length - 1 && <Separator />}
+                          </React.Fragment>
+                        ))}
+                      </YStack>
+                    </ScrollView>
+                  </YStack>
+                )}
+              </YStack>
+            </ScrollView>
+          </KeyboardAvoidingView>
         </Sheet.Frame>
       </Sheet>
     </YStack>

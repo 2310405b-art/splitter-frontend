@@ -5,7 +5,7 @@ import { Tabs, useRouter } from 'expo-router';
 import { Pressable } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { YStack, XStack, Text, View } from 'tamagui';
-import { Home, Settings, Bell, ChevronLeft } from '@tamagui/lucide-icons';
+import { Home, Settings, Bell, ChevronLeft, Sun, Moon } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
 import { AppState } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
@@ -37,8 +37,12 @@ function DotBadge({ value }: { value?: number }) {
 function GlobalTabsHeader(props: any) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { user } = useAppStore();
+  const { user, theme, setTheme } = useAppStore();
   const fetchAll = useFriendsStore((s) => s.fetchAll);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  }, [theme, setTheme]);
   const { t } = useTranslation();
   const routeName = props?.route?.name ?? '';
   const showHomeShortcut =
@@ -93,6 +97,10 @@ function GlobalTabsHeader(props: any) {
         </XStack>
 
         <XStack ai="center" gap="$3">
+          <Pressable onPress={toggleTheme} hitSlop={10}>
+            {theme === 'dark' ? <Sun size={22} color="$gray11" /> : <Moon size={22} color="$gray11" />}
+          </Pressable>
+
           <Pressable onPress={() => router.push('/tabs/friends/requests')}>
             <View>
               <Bell size={22} color="$gray11" />

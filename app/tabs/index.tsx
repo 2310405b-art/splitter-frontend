@@ -2,14 +2,17 @@ import React, { useEffect, useMemo, useRef, useCallback } from 'react';
 import { Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useFocusEffect } from '@react-navigation/native';
-import { YStack, XStack, Text, View, Circle } from 'tamagui';
-import { ScanLine, Users, UserPlus, RefreshCw } from '@tamagui/lucide-icons';
+import { YStack, XStack, Text, View, Circle, ScrollView } from 'tamagui';
+import { ScanLine, Users, UserPlus, RefreshCw, Edit3, History, ChevronRight } from '@tamagui/lucide-icons';
 import { useTranslation } from 'react-i18next';
 
 import { ScreenContainer } from '@/shared/ui/ScreenContainer';
 import UserAvatar from '@/shared/ui/UserAvatar';
 import type { SessionHistoryEntry } from '@/features/sessions/api/history.api';
 import { useSessionsHistoryStore } from '@/features/sessions/model/history.store';
+import { useReceiptSessionStore } from '@/features/receipt/model/receipt-session.store';
+import { ReceiptApi } from '@/features/receipt/api/receipt.api';
+import { BalanceWidget } from '@/features/balances/ui/BalanceWidget';
 
 const HOME_HISTORY_LIMIT = 10;
 const DEFAULT_CURRENCY = 'UZS';
@@ -35,15 +38,17 @@ function ActionButton({
   title,
   icon,
   onPress,
+  width = 112,
 }: {
   title: string;
   icon: React.ReactNode;
   onPress: () => void;
+  width?: number;
 }) {
   return (
     <XStack
       onPress={onPress}
-      width={171}
+      width={width}
       height={48}
       borderRadius={12}
       alignItems="center"
@@ -57,22 +62,22 @@ function ActionButton({
       focusStyle={{ borderColor: '$gray7' }}
     >
       {icon}
-      <Text fontSize={14}>{title}</Text>
+      <Text fontSize={12} fontWeight="600">{title}</Text>
     </XStack>
   );
 }
 
-function AvatarStack({ participantIds }: { participantIds: string[] }) {
-  const shown = participantIds.slice(0, 3);
-  const extra = Math.max(0, participantIds.length - shown.length);
+function AvatarStack({ participants }: { participants: { uniqueId: string; username: string; avatarUrl?: string | null }[] }) {
+  const shown = participants.slice(0, 3);
+  const extra = Math.max(0, participants.length - shown.length);
 
   return (
     <XStack w={92} h={28} ai="center">
-      {shown.map((uniqueId, i) => (
-        <View key={uniqueId ?? i} ml={i === 0 ? 0 : -8}>
+      {shown.map((p, i) => (
+        <View key={p.uniqueId ?? i} ml={i === 0 ? 0 : -8}>
           <UserAvatar
-            uri={undefined}
-            label={(uniqueId || 'U').slice(0, 2).toUpperCase()}
+            uri={p.avatarUrl ?? undefined}
+            label={(p.username || 'U').slice(0, 2).toUpperCase()}
             size={28}
             textSize={12}
             backgroundColor="$gray5"
@@ -102,53 +107,74 @@ function AvatarStack({ participantIds }: { participantIds: string[] }) {
 
 function BillCard({
   title,
-  sub,
+  date,
+  participantsLabel,
   amountLabel,
-  participantIds,
+  participants,
   onPress,
 }: {
   title: string;
-  sub: string;
+  date: string;
+  participantsLabel: string;
   amountLabel: string;
-  participantIds: string[];
+  participants: { uniqueId: string; username: string; avatarUrl?: string | null }[];
   onPress?: () => void;
 }) {
   return (
-    <Pressable
+    <YStack
       onPress={onPress}
       disabled={!onPress}
-      style={({ pressed }) => ({
-        width: 358,
-        opacity: onPress && pressed ? 0.9 : 1,
-      })}
+      w="100%"
+      h={115}
+      br={20}
+      borderWidth={1}
+      borderColor="$gray3"
+      p="$4"
+      backgroundColor="$color1"
+      shadowColor="#000"
+      shadowOffset={{ width: 0, height: 6 }}
+      shadowOpacity={0.06}
+      shadowRadius={16}
+      elevationAndroid={3}
+      pressStyle={{ scale: 0.98, opacity: 0.9 }}
+      hoverStyle={{ scale: 1.01 }}
     >
-      <YStack
-        h={110}
-        br={12}
-        borderWidth={1}
-        borderColor="$gray6"
-        p="$3"
-        backgroundColor="white"
-      >
-        <XStack jc="space-between" ai="center">
-          <YStack>
-            <Text fontSize={16} fontWeight="600" lineHeight={19}>
-              {title}
+      <XStack jc="space-between" ai="flex-start">
+        <YStack gap="$1.5" f={1} mr="$2">
+          {/* Sana yozilgan to'rtburchak (Date Badge) */}
+          <XStack
+            px="$2.5"
+            py="$1"
+            bg="#2ECC7115"
+            br={6}
+            alignSelf="flex-start"
+            ai="center"
+            jc="center"
+          >
+            <Text fontSize={10} fontWeight="700" color="#2ECC71">
+              {date}
             </Text>
-            <Text mt="$1" fontSize={12} lineHeight={12} color="$gray10">
-              {sub}
-            </Text>
-          </YStack>
-          <Text fontSize={14} lineHeight={22} fontWeight="700" color="#2ECC71">
+          </XStack>
+          <Text fontSize={16} fontWeight="700" lineHeight={19} color="$gray12" numberOfLines={1}>
+            {title}
+          </Text>
+        </YStack>
+        
+        <YStack ai="flex-end" gap="$1">
+          <Text fontSize={16} fontWeight="800" color="#2ECC71">
             {amountLabel}
           </Text>
-        </XStack>
+          <Text fontSize={11} color="$gray10">
+            {participantsLabel}
+          </Text>
+        </YStack>
+      </XStack>
 
-        <XStack mt="auto" ai="center">
-          <AvatarStack participantIds={participantIds} />
-        </XStack>
-      </YStack>
-    </Pressable>
+      <XStack mt="auto" jc="space-between" ai="center">
+        <AvatarStack participants={participants} />
+        <ChevronRight size={16} color="$gray8" />
+      </XStack>
+    </YStack>
   );
 }
 
@@ -180,8 +206,8 @@ export default function HomePage() {
 
   useFocusEffect(
     useCallback(() => {
-      refreshIfStale(15_000, HOME_HISTORY_LIMIT).catch(() => {});
-    }, [refreshIfStale])
+      forceRefresh(HOME_HISTORY_LIMIT).catch(() => {});
+    }, [forceRefresh])
   );
 
   const onManualRefresh = useCallback(() => {
@@ -191,38 +217,101 @@ export default function HomePage() {
   const openFriends = () => router.push('/tabs/friends');
   const openGroups = () => router.push('/tabs/groups');
   const onScan = () => router.push('/tabs/scan-receipt');
+  const onManualCreate = async () => {
+    useReceiptSessionStore.getState().reset();
+    let uniqueSessionId = Math.floor(100000 + Math.random() * 900000);
+    try {
+      const response = await ReceiptApi.createSession();
+      if (response && response.id) {
+        uniqueSessionId = response.id;
+      }
+    } catch (err) {
+      console.warn('Failed to create backend session for manual bill, using random ID:', err);
+    }
+    useReceiptSessionStore.setState({
+      session: {
+        sessionId: uniqueSessionId,
+        sessionName: t('home.manual.defaultName', 'Manual Bill'),
+        language: i18n.language || 'en',
+      },
+      items: [],
+      participants: [],
+      currency: 'UZS',
+    });
+    router.push('/tabs/sessions/verify-items');
+  };
   const openAllSessions = () => router.push('/tabs/sessions/history');
 
-  const recent = useMemo<SessionHistoryEntry[]>(() => sessions.slice(0, 3), [sessions]);
+  const recent = useMemo<SessionHistoryEntry[]>(() => sessions.slice(0, HOME_HISTORY_LIMIT), [sessions]);
 
   return (
-    <ScreenContainer>
-      <YStack f={1} ai="center" bg="white">
-        <YStack ai="center" mt="$6" mb="$4">
-          <Pressable onPress={onScan}>
-            <Circle size={64} bg="#2ECC71" ai="center" jc="center" elevationAndroid={4}>
+    <ScrollView
+      w="100%"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: 320 }}
+    >
+      <ScreenContainer>
+        <YStack ai="center" bg="$background" w="100%">
+        <XStack gap="$6" ai="center" mt="$6" mb="$4">
+          <YStack ai="center">
+            <Circle
+              onPress={onScan}
+              size={64}
+              bg="#2ECC71"
+              ai="center"
+              jc="center"
+              elevationAndroid={4}
+              pressStyle={{ scale: 0.95 }}
+            >
               <ScanLine size={26} color="white" />
             </Circle>
-          </Pressable>
-          <Text mt="$2" color="$gray10" fontSize={13}>
-            {t('home.scan.cta', 'Scan invite')}
-          </Text>
-        </YStack>
+            <Text mt="$2" color="$gray10" fontSize={13}>
+              {t('home.scan.cta', 'Scan receipt')}
+            </Text>
+          </YStack>
 
-        <XStack w={358} jc="space-between" mb="$5">
+          <YStack ai="center">
+            <Circle
+              onPress={onManualCreate}
+              size={64}
+              bg="#3498DB"
+              ai="center"
+              jc="center"
+              elevationAndroid={4}
+              pressStyle={{ scale: 0.95 }}
+            >
+              <Edit3 size={26} color="white" />
+            </Circle>
+            <Text mt="$2" color="$gray10" fontSize={13}>
+              {t('home.manual.cta', 'Manual bill')}
+            </Text>
+          </YStack>
+        </XStack>
+
+        <XStack w="100%" jc="space-between" mb="$5">
           <ActionButton
             title={t('home.actions.friends', 'Friends')}
             icon={<Users size={18} />}
             onPress={openFriends}
+            width={112}
           />
           <ActionButton
             title={t('home.actions.groups', 'Groups')}
             icon={<UserPlus size={18} />}
             onPress={openGroups}
+            width={112}
+          />
+          <ActionButton
+            title={t('home.actions.history', 'History')}
+            icon={<History size={18} />}
+            onPress={openAllSessions}
+            width={112}
           />
         </XStack>
 
-        <XStack w={358} jc="space-between" ai="center" mb="$3">
+        <BalanceWidget />
+
+        <XStack w="100%" jc="space-between" ai="center" mb="$3">
           <Text fontSize={18} fontWeight="600">
             {t('home.recent.title', 'Recent bills')}
           </Text>
@@ -247,7 +336,7 @@ export default function HomePage() {
           </XStack>
         </XStack>
 
-        <YStack gap="$3" pb="$6">
+        <YStack w="100%" gap="$3" pb="$6">
           {loading && (
             <Text color="$gray10" fontSize={14}>
               {t('home.recent.loading', 'Loading recent bills...')}
@@ -264,13 +353,12 @@ export default function HomePage() {
             </Text>
           )}
           {recent.map((bill) => {
-            const participantIds = bill.participantUniqueIds ?? [];
             const participantsLabel = t('home.recent.participants', {
-              count: participantIds.length,
-              defaultValue: `${participantIds.length} participants`,
+              count: (bill.participants ?? []).length,
+              defaultValue: `${(bill.participants ?? []).length} participants`,
             });
             const dateForSummary = bill.finalizedAt || bill.createdAt;
-            const summary = `${formatSessionDate(dateForSummary, i18n.language)} • ${participantsLabel}`;
+            const dateStr = formatSessionDate(dateForSummary, i18n.language);
             const totalAmount = bill.grandTotal ?? 0;
             const currency = bill.currency || bill.payload?.totals?.currency || DEFAULT_CURRENCY;
             const amountLabel = `${totalAmount.toLocaleString(i18n.language ?? 'en', {
@@ -282,9 +370,10 @@ export default function HomePage() {
               <BillCard
                 key={bill.sessionId}
                 title={bill.sessionName || t('home.recent.fallbackName', 'Bill')}
-                sub={summary}
+                date={dateStr}
+                participantsLabel={participantsLabel}
                 amountLabel={amountLabel}
-                participantIds={participantIds}
+                participants={bill.participants ?? []}
                 onPress={() =>
                   router.push({
                     pathname: '/tabs/sessions/history/[historyId]',
@@ -296,6 +385,7 @@ export default function HomePage() {
           })}
         </YStack>
       </YStack>
-    </ScreenContainer>
+      </ScreenContainer>
+    </ScrollView>
   );
 }

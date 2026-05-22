@@ -1,7 +1,9 @@
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useRouter } from 'expo-router';
 import { Pressable, RefreshControl } from 'react-native';
-import { YStack, XStack, Text, ScrollView, View } from 'tamagui';
+import { YStack, XStack, Text, ScrollView, View, Button } from 'tamagui';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ChevronLeft } from '@tamagui/lucide-icons';
 
 import UserAvatar from '@/shared/ui/UserAvatar';
 import { useSessionsHistoryStore } from '@/features/sessions/model/history.store';
@@ -74,15 +76,16 @@ function HistoryCard({
   return (
     <Pressable
       onPress={onPress}
-      style={({ pressed }) => ({ width: 358, opacity: pressed ? 0.9 : 1 })}
+      style={({ pressed }) => ({ width: '100%', opacity: pressed ? 0.9 : 1 })}
     >
       <YStack
         h={110}
+        w="100%"
         br={12}
         borderWidth={1}
-        borderColor="#E4E7EB"
+        borderColor="$gray3"
         p="$3"
-        backgroundColor="white"
+        backgroundColor="$color1"
       >
         <XStack jc="space-between" ai="center">
           <YStack>
@@ -108,6 +111,7 @@ function HistoryCard({
 
 export default function SessionsHistoryScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const sessions = useSessionsHistoryStore(state => state.sessions);
   const loading = useSessionsHistoryStore(state => state.loading);
   const initialized = useSessionsHistoryStore(state => state.initialized);
@@ -140,17 +144,23 @@ export default function SessionsHistoryScreen() {
   const history = useMemo<SessionHistoryEntry[]>(() => sessions, [sessions]);
 
   return (
-    <YStack f={1} bg="$background" px="$4" pt="$4">
+    <YStack f={1} bg="$background" px="$4" pt={(insets?.top ?? 0) + 16}>
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ alignItems: 'center', paddingBottom: 32, gap: 16 }}
+        contentContainerStyle={{ paddingBottom: (insets?.bottom ?? 0) + 300, gap: 16 }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <YStack w={358} gap="$1" mb="$2">
+        <YStack w="100%" gap="$2" mb="$2">
+          <Button unstyled alignSelf="flex-start" onPress={() => router.back()} mb="$1">
+            <XStack ai="center" gap="$1">
+              <ChevronLeft size={20} color="#2ECC71" />
+              <Text color="#2ECC71" fontSize={16} fontWeight="600">Ortga</Text>
+            </XStack>
+          </Button>
           <Text fontSize={24} fontWeight="700">Oxirgi hisoblar</Text>
-          <Text fontSize={12} color="$gray10">Bosh sahifa</Text>
+          <Text fontSize={12} color="$gray10">Hisobotlar tarixi</Text>
         </YStack>
 
         {loading && (

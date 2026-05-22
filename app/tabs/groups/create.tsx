@@ -119,7 +119,8 @@ export default function GroupCreateScreen() {
       const label = pickTitle(friend);
       const subtitle = pickSubtitle(friend);
       const role = uid ? memberRole.get(uid.toUpperCase()) : undefined;
-      return { uid, label, subtitle, role };
+      const avatarUrl = friend?.user?.avatarUrl ?? friend?.avatarUrl ?? null;
+      return { uid, label, subtitle, role, avatarUrl };
     });
     if (!filter) return list;
     const q = filter.toLowerCase();

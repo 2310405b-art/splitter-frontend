@@ -61,7 +61,7 @@ export default function GroupDetailsScreen() {
       .map((f: any) => {
         const uid = f?.user?.uniqueId ?? f?.uniqueId ?? '';
         const label = f?.user?.displayName || f?.user?.username || f?.displayName || f?.username || uid;
-        return { uniqueId: uid, username: label, displayName: f?.user?.displayName ?? f?.displayName };
+        return { uniqueId: uid, username: label, displayName: f?.user?.displayName ?? f?.displayName, avatarUrl: f?.user?.avatarUrl ?? f?.avatarUrl ?? null, user: f?.user };
       })
       .filter(u => !!u.uniqueId && !memberSetUpper.has(u.uniqueId.toUpperCase()));
   }, [friends, memberSetUpper]);

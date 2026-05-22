@@ -148,5 +148,15 @@ export const ReceiptApi = {
       throw normalizeError(error);
     }
   },
+
+  async createSession(payload?: { groupId?: number; serviceFee?: number; total?: number }): Promise<{ id: number }> {
+    try {
+      const { data } = await apiClient.post<{ id: number }>('/sessions', payload);
+      return data;
+    } catch (error) {
+      console.error('[API] Error (createSession):', error);
+      throw normalizeError(error);
+    }
+  },
 };
 

@@ -30,5 +30,5 @@
   "verify": { "title": "验证", "total": "总计：", "continueToSplit": "继续拆分", "addItem": "添加商品", "editItem": "编辑", "itemName": "名称", "itemNamePlaceholder": "例如：披萨", "price": "价格", "quantity": "数量", "save": "保存" },
   "split": { "title": "拆分", "addPerson": "添加人员", "addBtn": "添加", "typeName": "输入姓名", "namePlaceholder": "例如：小明", "yourFriends": "您的好友", "total": "总计：", "done": "完成！", "eachPays": "每人：{{amount}}", "unassignedWarning": "{{count}}件商品未分配", "unassignedAlert": "{{count}}件商品尚未分配。是否继续？", "attention": "注意！", "yes": "是", "no": "否", "deleteTitle": "删除", "deleteConfirm": "确定要删除此人吗？" },
   "finish": { "billSummary": "账单摘要", "receiptNum": "收据 #{{id}}", "totalAmount": "总金额", "byParticipant": "按参与者：", "byItem": "按商品：", "noParticipantData": "暂无参与者数据。", "noAllocationData": "暂无分配详情。", "complete": "完成结算" },
-  "scan": { "title": "扫描收据", "back": "返回", "sessionName": "名称", "sessionPlaceholder": "例如：餐厅", "language": "语言：", "processing": "处理中...", "uploading": "上传收据...", "scanBtn": "扫描", "cancel": "取消", "useMock": "示例收据", "allowCamera": "请允许摄像头访问", "lastPhoto": "上次照片已保存；重新拍摄将覆盖。" }
+  "scan": { "title": "扫描收据", "back": "返回", "sessionName": "名称", "sessionPlaceholder": "例如：餐厅", "language": "语言：", "processing": "处理中...", "uploading": "上传收据...", "scanBtn": "扫描", "cancel": "取消", "manualEntry": "手动输入", "allowCamera": "请允许摄像头访问", "lastPhoto": "上次照片已保存；重新拍摄将覆盖。" }
 }

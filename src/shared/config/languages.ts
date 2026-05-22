@@ -7,16 +7,17 @@ export interface LanguageOption {
   shortLabel: string;
   color: string;
   nativeName: string;
+  flag: string;
 }
 
 export const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'uz', shortLabel: 'UZ', color: '#1E88E5', nativeName: "O'zbek" },
-  { code: 'en', shortLabel: 'EN', color: '#E53935', nativeName: 'English' },
-  { code: 'ru', shortLabel: 'RU', color: '#5C6BC0', nativeName: 'Русский' },
-  { code: 'tr', shortLabel: 'TR', color: '#D32F2F', nativeName: 'Türkçe' },
-  { code: 'zh', shortLabel: 'ZH', color: '#F4511E', nativeName: '中文' },
-  { code: 'ko', shortLabel: 'KO', color: '#00897B', nativeName: '한국어' },
-  { code: 'ja', shortLabel: 'JA', color: '#C62828', nativeName: '日本語' },
+  { code: 'uz', shortLabel: 'UZ', color: '#1E88E5', nativeName: "O'zbek", flag: '🇺🇿' },
+  { code: 'en', shortLabel: 'EN', color: '#E53935', nativeName: 'English', flag: '🇺🇸' },
+  { code: 'ru', shortLabel: 'RU', color: '#5C6BC0', nativeName: 'Русский', flag: '🇷🇺' },
+  { code: 'tr', shortLabel: 'TR', color: '#D32F2F', nativeName: 'Türkçe', flag: '🇹🇷' },
+  { code: 'zh', shortLabel: 'ZH', color: '#F4511E', nativeName: '中文', flag: '🇨🇳' },
+  { code: 'ko', shortLabel: 'KO', color: '#00897B', nativeName: '한국어', flag: '🇰🇷' },
+  { code: 'ja', shortLabel: 'JA', color: '#C62828', nativeName: '日本語', flag: '🇯🇵' },
 ];
 
 export const DEFAULT_LANGUAGE: LanguageCode = 'en';

@@ -14,6 +14,7 @@ import PasswordInput from '@/shared/ui/PasswordInput';
 import { login, LoginRequest, getCurrentUser } from '../api';
 import { saveToken } from '@/shared/lib/utils/token-storage';
 import { useAppStore } from '@/shared/lib/stores/app-store';
+import { useReceiptSessionStore } from '@/features/receipt/model/receipt-session.store';
 import { Mail, Lock } from '@tamagui/lucide-icons';
 
 const schema = z.object({
@@ -45,6 +46,10 @@ export default function LoginForm() {
       } catch (fetchError) {
         console.warn('Login profile refresh failed:', fetchError);
       }
+
+      // Yangi login bo'lganda eski receipt session state'ini tozalaymiz
+      // Bu skaner ishlamasligi muammosini hal qiladi
+      useReceiptSessionStore.getState().reset();
 
       setAuth(res.token, profile);
       router.replace('/');

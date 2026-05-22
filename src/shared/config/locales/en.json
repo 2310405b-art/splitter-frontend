@@ -62,14 +62,19 @@
       "friendFallback": "friend"
     },
     "scan": {
-      "cta": "Scan invite"
+      "cta": "Scan receipt"
+    },
+    "manual": {
+      "cta": "Manual entry",
+      "defaultName": "Manual Bill"
     },
     "actions": {
       "friends": "Friends",
-      "groups": "Groups"
+      "groups": "Groups",
+      "history": "History"
     },
     "recent": {
-      "title": "Recent bills",
+      "title": "Reports history",
       "showMore": "Show more",
       "loading": "Loading recent bills...",
       "empty": "No bills yet",
@@ -206,6 +211,12 @@
         "zh": "Chinese",
         "ko": "Korean"
       }
+    },
+    "theme": {
+      "title": "Theme",
+      "description": "Choose the theme used across the app.",
+      "light": "Light",
+      "dark": "Dark"
     }
   },
   "verify": {
@@ -258,7 +269,7 @@
     "uploading": "Uploading receipt...",
     "scanBtn": "Scan receipt",
     "cancel": "Cancel",
-    "useMock": "Use mock receipt",
+    "manualEntry": "Manual entry",
     "allowCamera": "Allow camera access",
     "lastPhoto": "Last photo stored; capturing again will overwrite it."
   }

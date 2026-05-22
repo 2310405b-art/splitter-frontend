@@ -49,14 +49,19 @@
       "friendFallback": "do'stim"
     },
     "scan": {
-      "cta": "Taklifni skanerlang"
+      "cta": "Chekni skanerlash"
+    },
+    "manual": {
+      "cta": "Qo'lda kiritish",
+      "defaultName": "Qo'lda kiritilgan hisob"
     },
     "actions": {
       "friends": "Do'stlar",
-      "groups": "Guruhlar"
+      "groups": "Guruhlar",
+      "history": "Tarix"
     },
     "recent": {
-      "title": "So'nggi hisoblar",
+      "title": "Hisobotlar tarixi",
       "showMore": "Ko'proq ko'rish",
       "loading": "Hisoblar yuklanmoqda...",
       "empty": "Hali hisoblar mavjud emas",
@@ -193,6 +198,12 @@
         "zh": "Xitoy tili",
         "ko": "Koreys tili"
       }
+    },
+    "theme": {
+      "title": "Mavzu",
+      "description": "Ilovada ishlatiladigan mavzuni tanlang.",
+      "light": "Yorug'",
+      "dark": "Qorong'u"
     }
   },
   "verify": {
@@ -245,7 +256,7 @@
     "uploading": "Chek yuklanmoqda...",
     "scanBtn": "Skanerlash",
     "cancel": "Bekor qilish",
-    "useMock": "Namuna chek",
+    "manualEntry": "Qo'lda kiritish",
     "allowCamera": "Kameraga ruxsat bering",
     "lastPhoto": "Oxirgi surat saqlangan; qayta suratga olish uni o'zgartiradi."
   }

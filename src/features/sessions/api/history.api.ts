@@ -14,6 +14,7 @@ export type SessionHistoryTotalsByParticipant = {
   username: string;
   amountOwed: number;
   avatarUrl?: string | null;
+  currency?: string;
 };
 
 /** Аллокации — доли товара по участникам */
@@ -37,6 +38,7 @@ export type SessionHistoryPayload = {
   totals: {
     byItem: SessionHistoryTotalsByItem[];
     grandTotal: number;
+    currency?: string;
     byParticipant: SessionHistoryTotalsByParticipant[];
   };
   createdAt: string; // ISO
@@ -71,6 +73,7 @@ export interface SessionHistoryEntry {
   finalizedAt?: string;
   createdAt?: string;
   grandTotal: number;
+  currency?: string;
 
   participantUniqueIds: string[];
 

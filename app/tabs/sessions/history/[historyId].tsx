@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { YStack, XStack, Text, ScrollView, Button } from 'tamagui';
+import { ChevronDown, ChevronUp } from '@tamagui/lucide-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import UserAvatar from '@/shared/ui/UserAvatar';
 import { useSessionsHistoryStore } from '@/features/sessions/model/history.store';
@@ -43,18 +45,23 @@ type ParticipantView = {
 const buildParticipantsView = (bill?: SessionHistoryEntry): ParticipantView[] => {
   if (!bill) return [];
 
-  const totalsByParticipant = new Map<string, SessionHistoryTotalsByParticipant>();
-  (bill.totals?.byParticipant ?? []).forEach(item => {
+  const payload = bill.payload as any;
+  const byParticipantList = bill.totals?.byParticipant ?? payload?.totalsByParticipant ?? [];
+  const byItemList = bill.totals?.byItem ?? payload?.totalsByItem ?? [];
+  const allocationsList = bill.allocations ?? payload?.allocations ?? [];
+
+  const totalsByParticipant = new Map<string, any>();
+  byParticipantList.forEach((item: any) => {
     totalsByParticipant.set(item.uniqueId, item);
   });
 
-  const itemsById = new Map<string, SessionHistoryItem>();
-  (bill.totals?.byItem ?? []).forEach(item => {
-    itemsById.set(item.itemId, item);
+  const itemsById = new Map<string, any>();
+  byItemList.forEach((item: any) => {
+    itemsById.set(item.itemId || item.id, item);
   });
 
-  const allocationsByParticipant = new Map<string, SessionHistoryAllocation[]>();
-  (bill.allocations ?? []).forEach(alloc => {
+  const allocationsByParticipant = new Map<string, any[]>();
+  allocationsList.forEach((alloc: any) => {
     const collection = allocationsByParticipant.get(alloc.participantId) ?? [];
     collection.push(alloc);
     allocationsByParticipant.set(alloc.participantId, collection);
@@ -63,7 +70,7 @@ const buildParticipantsView = (bill?: SessionHistoryEntry): ParticipantView[] =>
   return (bill.participants ?? []).map(p => {
     const totals = totalsByParticipant.get(p.uniqueId);
     const allocations = allocationsByParticipant.get(p.uniqueId) ?? [];
-    const items = allocations.map((allocation, index) => {
+    const items = allocations.map((allocation: any, index: number) => {
       const itemMeta = itemsById.get(allocation.itemId);
       return {
         id: `${allocation.itemId}-${p.uniqueId}-${index}`,
@@ -78,15 +85,17 @@ const buildParticipantsView = (bill?: SessionHistoryEntry): ParticipantView[] =>
         avatarUrl: p.avatarUrl ?? null,
       },
       avatarUrl: p.avatarUrl ?? null,
-      amount: totals?.amountOwed ?? 0,
+      amount: totals?.amountOwed ?? totals?.amount ?? 0,
       items,
     };
   });
 };
 
 export default function HistoryDetailsScreen() {
+  const insets = useSafeAreaInsets();
   const { historyId } = useLocalSearchParams<{ historyId: string }>();
   const router = useRouter();
+  const [showItems, setShowItems] = useState(false);
   const sessions = useSessionsHistoryStore(state => state.sessions);
   const loading = useSessionsHistoryStore(state => state.loading);
   const initialized = useSessionsHistoryStore(state => state.initialized);
@@ -110,6 +119,12 @@ export default function HistoryDetailsScreen() {
   }, [initialized, loading, currentLimit, fetchHistory, bill]);
 
   const participants = useMemo(() => buildParticipantsView(bill), [bill]);
+  
+  const byItemList = useMemo(() => {
+    if (!bill) return [];
+    return bill.totals?.byItem ?? (bill.payload as any)?.totalsByItem ?? [];
+  }, [bill]);
+
   const currency =
     bill?.currency ||
     bill?.totals?.currency ||
@@ -139,12 +154,12 @@ export default function HistoryDetailsScreen() {
   }
 
   return (
-    <YStack f={1} bg="$background" px="$4" pt="$4" pb="$4">
+    <YStack f={1} bg="$background" px="$4" pt="$4">
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ alignItems: 'center', paddingBottom: 32, gap: 16 }}
+        contentContainerStyle={{ paddingBottom: (insets?.bottom ?? 0) + 300, gap: 16 }}
       >
-        <YStack w={358} gap="$3">
+        <YStack w="100%" gap="$3">
           <Text fontSize={24} fontWeight="700">{bill.sessionName || 'Hisob'}</Text>
           <Button unstyled alignSelf="flex-start" onPress={() => router.back()}>
             <Text color="#2ECC71">{'< Ortga'}</Text>
@@ -160,11 +175,11 @@ export default function HistoryDetailsScreen() {
         {participants.map(({ participant, avatarUrl, amount, items }) => (
           <YStack
             key={participant.uniqueId}
-            w={358}
+            w="100%"
             borderWidth={1}
             borderColor="#2ECC71"
             br={12}
-            bg="white"
+            bg="$color1"
             px={16}
             py={12}
             gap="$3"
@@ -188,9 +203,9 @@ export default function HistoryDetailsScreen() {
             <YStack gap={8}>
               {items.length ? (
                 items.map(item => (
-                  <XStack key={item.id} jc="space-between" ai="center">
-                    <Text fontSize={14}>{item.title}</Text>
-                    <Text fontSize={14} fontWeight="600" color="#2ECC71">
+                  <XStack key={item.id} jc="space-between" ai="center" gap="$2">
+                    <Text fontSize={14} numberOfLines={1} f={1} mr="$2">{item.title}</Text>
+                    <Text fontSize={14} fontWeight="600" color="#2ECC71" shrink={0}>
                       {item.price.toLocaleString()}
                     </Text>
                   </XStack>
@@ -203,6 +218,56 @@ export default function HistoryDetailsScreen() {
             </YStack>
           </YStack>
         ))}
+
+        {/* Narsalar ro'yxati (All items) - Collapsible Accordion */}
+        {byItemList.length > 0 && (
+          <YStack
+            w="100%"
+            borderWidth={1}
+            borderColor="$gray3"
+            br={16}
+            bg="$color1"
+            overflow="hidden"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 4 }}
+            shadowOpacity={0.04}
+            shadowRadius={10}
+            elevationAndroid={2}
+          >
+            {/* Header / Toggle Button */}
+            <XStack
+              onPress={() => setShowItems(!showItems)}
+              p="$4"
+              jc="space-between"
+              ai="center"
+              backgroundColor="$color1"
+              pressStyle={{ backgroundColor: '$gray1' }}
+            >
+              <Text fontSize={16} fontWeight="700" color="$gray12">
+                Narsalar ro'yxati ({byItemList.length})
+              </Text>
+              {showItems ? (
+                <ChevronUp size={20} color="#2ECC71" />
+              ) : (
+                <ChevronDown size={20} color="#2ECC71" />
+              )}
+            </XStack>
+
+            {/* Collapsible Content list */}
+            {showItems && (
+              <YStack px="$4" pb="$4" gap={12} borderTopWidth={1} borderColor="$gray3">
+                {byItemList.map((item: any) => (
+                  <XStack key={item.itemId || item.id} jc="space-between" ai="center" gap="$2">
+                    <Text fontSize={14} color="$gray11" numberOfLines={1} f={1} mr="$2">{item.name}</Text>
+                    <Text fontSize={14} fontWeight="700" color="#2ECC71" shrink={0}>
+                      {fmtCurrency(item.total || item.totalPrice, currency)}
+                    </Text>
+                  </XStack>
+                ))}
+              </YStack>
+            )}
+          </YStack>
+        )}
       </ScrollView>
     </YStack>
   );

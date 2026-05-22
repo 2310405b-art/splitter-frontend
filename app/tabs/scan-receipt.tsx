@@ -15,6 +15,19 @@ import {
 import { useAppStore } from '@/shared/lib/stores/app-store';
 import { DEFAULT_LANGUAGE } from '@/shared/config/languages';
 
+// Skaner screen har focus bo'lganda store'dagi eski "parsing" state tozalanadi
+function useResetParsingOnFocus() {
+  useFocusEffect(
+    useCallback(() => {
+      // Agar oldingi navigatsiyadan qolgan parsing=true bo'lsa, tozalaymiz
+      const state = useReceiptSessionStore.getState();
+      if (state.parsing) {
+        useReceiptSessionStore.setState({ parsing: false, parseError: undefined });
+      }
+    }, [])
+  );
+}
+
 const getDefaultSessionName = () => {
   const now = new Date();
   const pad = (value: number) => value.toString().padStart(2, '0');
@@ -55,6 +68,16 @@ export default function ScanReceiptScreen() {
 
   const language = appLanguage || DEFAULT_LANGUAGE;
   const { t } = useTranslation();
+
+  // Screen focus bo'lganda eski "parsing" state ni tozalaymiz
+  useResetParsingOnFocus();
+
+  // Screen focus bo'lganda localError ni ham tozalaymiz
+  useFocusEffect(
+    useCallback(() => {
+      setLocalError(null);
+    }, [])
+  );
 
   useEffect(() => {
     if (isFocused && !perm?.granted) requestPerm();
@@ -140,7 +163,8 @@ export default function ScanReceiptScreen() {
   }, [cameraRef, parsing, sessionName, setSessionNameStore, setCapture, parseReceipt, language, router]);
 
   const handleBarcodeScanned = useCallback(async (scanningResult: any) => {
-    if (parsing || localError) return;
+    // Faqat parsing davom etayotganda blokladamiz, localError emas
+    if (parsing) return;
     
     try {
       setLocalError(null);
@@ -158,14 +182,25 @@ export default function ScanReceiptScreen() {
       const message = error instanceof Error ? error.message : 'Something went wrong while sending the QR data';
       setLocalError(message);
     }
-  }, [parsing, localError, sessionName, setSessionNameStore, parseQRReceipt, language, router]);
+  }, [parsing, sessionName, setSessionNameStore, parseQRReceipt, language, router]);
 
-  const useMock = useCallback(() => {
-    router.push({
-      pathname: '/tabs/sessions/verify-items',
-      params: { receiptId: 'mock-001' },
-    } as never);
-  }, [router]);
+  const handleManualEntry = useCallback(() => {
+    const preparedName = sessionName.trim() || getDefaultSessionName();
+    const uniqueSessionId = Math.floor(100000 + Math.random() * 900000);
+    
+    useReceiptSessionStore.getState().reset();
+    useReceiptSessionStore.setState({
+      session: {
+        sessionId: uniqueSessionId,
+        sessionName: preparedName,
+        language: language,
+      },
+      items: [],
+      participants: [],
+      currency: 'UZS',
+    });
+    router.push('/tabs/sessions/verify-items');
+  }, [router, sessionName, language]);
 
   const goBack = useCallback(() => {
     router.back();
@@ -284,8 +319,8 @@ export default function ScanReceiptScreen() {
             </Button>
           </XStack>
 
-          <Button size="$2" borderRadius="$3" theme="gray" variant="outlined" onPress={useMock} disabled={parsing}>
-            {t('scan.useMock')}
+          <Button size="$2" borderRadius="$3" theme="gray" variant="outlined" onPress={handleManualEntry} disabled={parsing}>
+            {t('scan.manualEntry')}
           </Button>
         </YStack>
       </View>

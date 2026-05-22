@@ -291,7 +291,7 @@ export default function SessionParticipantsScreen() {
   const bottomPad = (insets?.bottom ?? 0) + 72;
 
   return (
-    <YStack f={1} bg="$background" p="$4" position="relative">
+    <YStack f={1} bg="$background" px="$4" pb="$4" pt={(insets?.top ?? 0) + 16} position="relative">
 
       {/* Groups */}
       {(groups ?? []).length > 0 && (
@@ -367,8 +367,8 @@ export default function SessionParticipantsScreen() {
       {/* Fixed Next button */}
       <YStack
         position="absolute"
-        left={0}
-        right={0}
+        left={16}
+        right={16}
         bottom={(insets?.bottom ?? 0) + 8}
         ai="center"
         pointerEvents="box-none"
@@ -377,7 +377,7 @@ export default function SessionParticipantsScreen() {
           unstyled
           onPress={goNext}
           disabled={!canNext}
-          width={358}
+          width="100%"
           height={41}
           borderRadius={10}
           backgroundColor="#2ECC71"

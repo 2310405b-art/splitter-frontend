@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { FinalizeTotalsByItem, FinalizeTotalsByParticipant, ReceiptAllocation } from '@/features/receipt/api/receipt.api';
 import { useReceiptSessionStore, type FinishPayload } from '@/features/receipt/model/receipt-session.store';
+import { useSessionsHistoryStore } from '@/features/sessions/model/history.store';
 
 type Participant = { uniqueId: string; username: string };
 
@@ -424,7 +425,7 @@ export default function FinishScreen() {
   return (
     <YStack f={1} bg="$background" position="relative">
       {/* Header */}
-      <YStack bg="$background" p="$4" pb="$2">
+      <YStack bg="$background" px="$4" pb="$2" pt={(insets?.top ?? 0) + 16}>
         <XStack w="100%" ai="center" jc="flex-start" mb="$3">
           <YStack ai="flex-start">
             <Text fontSize={16} fontWeight="700">
@@ -624,7 +625,10 @@ export default function FinishScreen() {
           bg="#2ECC71"
           ai="center"
           jc="center"
-          onPress={() => router.replace('/tabs')}
+          onPress={async () => {
+            useSessionsHistoryStore.getState().forceRefresh(10).catch(() => {});
+            router.replace('/tabs');
+          }}
           pressStyle={{ opacity: 0.9 }}
         >
           <Text fontSize={16} fontWeight="600" color="white">

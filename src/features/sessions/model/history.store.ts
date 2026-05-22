@@ -42,8 +42,11 @@ const initialState: State = {
 const normalizeEntry = (raw: SessionHistoryEntryRaw): SessionHistoryEntry => {
   const p: SessionHistoryPayload | undefined = raw.payload;
 
+  const rawParticipants =
+    p?.totals?.byParticipant ?? (p as any)?.totalsByParticipant ?? [];
+
   const participants =
-    p?.totals?.byParticipant?.map(bp => ({
+    rawParticipants.map((bp: any) => ({
       uniqueId: bp.uniqueId,
       username: bp.username,
       avatarUrl: bp.avatarUrl ?? null,
@@ -53,7 +56,14 @@ const normalizeEntry = (raw: SessionHistoryEntryRaw): SessionHistoryEntry => {
   const createdAt = p?.createdAt;
 
   const grandTotal =
-    typeof raw.grandTotal === 'number' ? raw.grandTotal : p?.totals?.grandTotal ?? 0;
+    typeof raw.grandTotal === 'number'
+      ? raw.grandTotal
+      : p?.totals?.grandTotal ?? (p as any)?.grandTotal ?? 0;
+
+  const participantUniqueIds =
+    raw.participantUniqueIds && raw.participantUniqueIds.length > 0
+      ? raw.participantUniqueIds
+      : participants.map((part: any) => part.uniqueId);
 
   return {
     sessionId: raw.sessionId ?? p?.sessionId ?? 0,
@@ -61,9 +71,9 @@ const normalizeEntry = (raw: SessionHistoryEntryRaw): SessionHistoryEntry => {
     finalizedAt,
     createdAt,
     grandTotal,
-    participantUniqueIds: raw.participantUniqueIds ?? [],
+    participantUniqueIds,
     totals: p?.totals,
-    allocations: p?.allocations ?? [],
+    allocations: p?.allocations ?? (p as any)?.allocations ?? [],
     participants,
     isCreator: raw.isCreator,
     payload: p!,
